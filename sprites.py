@@ -147,9 +147,9 @@ class Platform(pg.sprite.Sprite):
 		self.game = game
 		self.tiles = tiles
 		
-		leftPos = WIDTH
+		leftPos = game.map.width
 		rightPos = 0
-		topPos = HEIGHT
+		topPos = game.map.height
 		bottomPos = 0
 		for tile in tiles:
 			if tile.rect.left < leftPos:
