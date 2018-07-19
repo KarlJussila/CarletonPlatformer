@@ -1,13 +1,14 @@
 import pygame as pg
+import sys
 
-def processInput():
+def processInput(game):
 	for event in pg.event.get():
 		if event.type == pg.QUIT:
-			if self.playing:
+			if game.playing:
 				pg.display.quit()
 				pg.quit()
 				sys.exit()
-			self.running = False
+			game.running = False
 		if event.type == pg.KEYDOWN:
 			if event.key == pg.K_SPACE:
-				self.player.jump()
+				game.player.jump()

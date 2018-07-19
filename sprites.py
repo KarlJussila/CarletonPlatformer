@@ -20,8 +20,8 @@ class Player(pg.sprite.Sprite):
 
 	def update(self):
 		self.onGround = False
-		for tile in self.game.tiles:
-			if self.pos.y <= tile.rect.top and (tile.rect.collidepoint((self.rect.bottomright[0], self.rect.bottomright[1] + 1)) or tile.rect.collidepoint((self.rect.bottomleft[0], self.rect.bottomleft[1] + 1))):
+		for platform in self.game.platforms:
+			if self.pos.y <= platform.rect.top and (platform.rect.collidepoint((self.rect.bottomright[0], self.rect.bottomright[1] + 1)) or platform.rect.collidepoint((self.rect.bottomleft[0], self.rect.bottomleft[1] + 1))):
 				self.onGround = True
 
 		self.lastPos = vec(self.pos.x, self.pos.y)
@@ -142,7 +142,7 @@ class Tile(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
 	def __init__(self, tiles, game):
-		self.groups = game.platforms
+		self.groups = game.platforms, game.all_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
 		self.tiles = tiles
@@ -162,9 +162,9 @@ class Platform(pg.sprite.Sprite):
 				bottomPos = tile.rect.bottom
 		self.rect = pg.Rect(leftPos, topPos, rightPos - leftPos, bottomPos - topPos)
 
-		print(self.rect.width, self.rect.height)
-		#self.image = pg.Surface((self.rect.width, self.rect.height))
-		#self.image.fill((110,110,110))
+		#print(self.rect.width, self.rect.height)
+		self.image = pg.Surface((self.rect.width, self.rect.height))
+		self.image.fill((255,0,0))
 
 
 class EndPoint(pg.sprite.Sprite):

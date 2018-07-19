@@ -32,7 +32,6 @@ class Game:
 				if tile != "." and tile != "\n":
 					if tile == "s":
 						newTile = Tile(self, col * TILE_SIZE, row * TILE_SIZE)
-						continuous = True
 						tileList.append(newTile)
 					elif tile == "t":
 						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)
@@ -43,8 +42,8 @@ class Game:
 					else:
 						Enemy1(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, int(tile))
 				else:
-					continuous = False
-					Platform(tileList,self)
+					if tileList != []:
+						Platform(tileList,self)
 					tileList = []
 
 	def new(self):
@@ -70,7 +69,7 @@ class Game:
 		self.playing = True
 		while self.playing:
 			self.clock.tick(FPS)
-			self.events()
+			self.events(self)
 			self.update()
 			self.draw()
 
@@ -86,111 +85,64 @@ class Game:
 		hits = pg.sprite.spritecollide(self.player, self.platforms, False)
 		if hits:
 			for hit in hits:
+				#Up
 				if self.player.vel.y < 0:
-					if self.player.lastPos.y - self.player.rect.height > hit.rect.bottom:
-						#Collision is from the bottom
-						nextHit = False
-						for tile in self.tiles:
-							if tile.rect.collidepoint((hit.rect.centerx, hit.rect.bottom + 1)):
-								nextHit = True
-						if nextHit:
-							continue
-						self.player.vel.y = 0
-						self.player.pos.y = hit.rect.bottom + self.player.rect.height + 1
-						self.player.rect.top = hit.rect.bottom + 1
-						break
-					else:
-						if self.player.vel.x > 0:
-							#Collision is from the left
-							isPlatform = False
-							for tile in self.tiles:
-								if tile.rect.collidepoint((hit.rect.left - 1, hit.rect.centery)):
-									isPlatform = True
-							if isPlatform:
-								self.player.vel.y = 0
-								self.player.pos.y = hit.rect.bottom + self.player.rect.height + 1
-								self.player.rect.top = hit.rect.bottom + 1
-								break
-							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.left - (self.player.rect.width/2) - 1
-							self.player.rect.right = hit.rect.left - 1
-							break
+					if self.player.vel.x < 0:
+						#Bottom Collision
+						if self.player.lastPos.y + TILE_SIZE > hit.rect.bottom:
+							self.player.vel.y = 0
+							self.player.pos.y = hit.rect.bottom + TILE_SIZE + 1
+						#Right Collision
 						else:
-							#Collision is from the right
-							isPlatform = False
-							for tile in self.tiles:
-								if tile.rect.collidepoint((hit.rect.right + 1, hit.rect.centery)):
-									isPlatform = True
-							if isPlatform:
-								self.player.vel.y = 0
-								self.player.pos.y = hit.rect.bottom + self.player.rect.height + 1
-								self.player.rect.top = hit.rect.bottom + 1
-								break
 							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.right + (self.player.rect.width/2) + 1
-							self.player.rect.left = hit.rect.right + 1
-							break
+							self.player.pos.x = hit.rect.right + (TILE_SIZE/2) + 1
+					elif self.player.vel.x > 0:
+						#Bottom Collision
+						if self.player.lastPos.y + TILE_SIZE > hit.rect.bottom:
+							self.player.vel.y = 0
+							self.player.pos.y = hit.rect.bottom + TILE_SIZE + 1
+						#Left Collision
+						else:
+							self.player.vel.x = 0
+							self.player.pos.x = hit.rect.left - (TILE_SIZE/2) - 1
+					#Bottom Collision
+					else:
+						self.player.vel.y = 0
+						self.player.pos.y = hit.rect.bottom + TILE_SIZE
+				#Down
 				elif self.player.vel.y > 0:
-					if self.player.lastPos.y < hit.rect.top:
-						#Collision is from the top
-						nextHit = False
-						for tile in self.tiles:
-							if tile.rect.collidepoint((hit.rect.centerx, hit.rect.top - 1)):
-								nextHit = True
-						if nextHit:
-							continue
+					if self.player.vel.x < 0:
+						#Top Collison
+						if self.player.lastPos.y < hit.rect.top:
+							self.player.vel.y = 0
+							self.player.pos.y = hit.rect.top - 1
+							self.player.onGround = True
+						#Right Collision
+						else:
+							self.player.vel. x = 0
+							self.player.pos.x = hit.rect.right + (TILE_SIZE/2) + 1
+					elif self.player.vel.x > 0:
+						#Top Collision
+						if self.player.lastPos.y < hit.rect.top:
+							self.player.vel.y = 0
+							self.player.pos.y = hit.rect.top - 1
+							self.player.onGround = True
+						#Left Collision
+						else:
+							self.player.vel.x = 0
+							self.player.pos.x = hit.rect.left - (TILE_SIZE/2) - 1
+					#Top Collision
+					else:
 						self.player.vel.y = 0
 						self.player.pos.y = hit.rect.top - 1
-						self.player.rect.bottom = hit.rect.top - 1
 						self.player.onGround = True
-						break
-					else:
-						if self.player.vel.x > 0:
-							#Collision is from the left
-							isPlatform = False
-							for tile in self.tiles:
-								if tile.rect.collidepoint((hit.rect.left - 1, hit.rect.centery)):
-									isPlatform = True
-							if isPlatform:
-								self.player.vel.y = 0
-								self.player.pos.y = hit.rect.top - 1
-								self.player.rect.bottom = hit.rect.top - 1
-								self.player.onGround = True
-								break
-							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.left - (self.player.rect.width/2) - 1
-							self.player.rect.right = hit.rect.left - 1
-							break
-						elif self.player.vel.x < 0:
-							#Collision is from the right
-							isPlatform = False
-							for tile in self.tiles:
-								if tile.rect.collidepoint((hit.rect.right + 1, hit.rect.centery)):
-									isPlatform = True
-							if isPlatform:
-								self.player.vel.y = 0
-								self.player.pos.y = hit.rect.top - 1
-								self.player.rect.bottom = hit.rect.top - 1
-								self.player.onGround = True
-								break
-
-							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.right + (self.player.rect.width/2) + 1
-							self.player.rect.left = hit.rect.right + 1
-							break
+				#On Ground
 				else:
-					if self.player.vel.x > 0:
-						#Collision is from the left
-						self.player.vel.x = 0
-						self.player.pos.x = hit.rect.left - (self.player.rect.width/2) - 1
-						self.player.rect.right = hit.rect.left - 1
-						break
-					elif self.player.vel.x < 0:
-						#Collision is from the right
-						self.player.vel.x = 0
-						self.player.pos.x = hit.rect.right + (self.player.rect.width/2) + 1
-						self.player.rect.left = hit.rect.right + 1
-						break
+					if self.player.vel.x < 0:
+						pass
+					else:
+						pass
+
 
 
 		if(self.player.rect.top > self.map.height):
