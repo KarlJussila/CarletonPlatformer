@@ -1,4 +1,5 @@
 TITLE = "Title"
+FILEPATH = "assets\\"
 
 WIDTH = 800
 HEIGHT = 600
@@ -24,4 +25,12 @@ PLAYER_GRAV = 1.2
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH / TILE_SIZE
 GRID_HEIGHT = HEIGHT / TILE_SIZE
+
+#Images
 TILE_IMAGE = 'stone.png'
+PLAYER_IMG = 'dwarf'
+PLAYER_IMG1 = 'dwarf1.png'
+PLAYER_IMG2 = 'dwarf2.png'
+PLAYER_IMG3 = 'dwarf3.png'
+PLAYER_IMG4 = 'dwarf4.png'
+PLAYER_C = 'minercart.png'

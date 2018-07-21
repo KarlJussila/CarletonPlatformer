@@ -8,8 +8,21 @@ class Player(pg.sprite.Sprite):
 		self.groups = game.all_sprites, game.player_sprite
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-		self.image = pg.Surface((20,20))
-		self.image.fill(GREEN)
+		
+		self.image = pg.image.load(FILEPATH + PLAYER_IMG1).convert_alpha()
+		self.dwarf1Left = self.image
+		self.dwarf1Right = pg.transform.flip(self.image, True, False)
+		self.dwarf2Left = pg.image.load(FILEPATH + PLAYER_IMG2).convert_alpha()
+		self.dwarf2Right = pg.transform.flip(self.dwarf2Left,True,False)
+		self.dwarf3Left = pg.image.load(FILEPATH + PLAYER_IMG3).convert_alpha()
+		self.dwarf3Right = pg.transform.flip(self.dwarf3Left,True,False)
+		self.dwarf4Left = pg.image.load(FILEPATH + PLAYER_IMG4).convert_alpha()
+		self.dwarf4Right = pg.transform.flip(self.dwarf4Left,True,False)
+		self.dwarfCartLeft = pg.image.load(FILEPATH + PLAYER_C).convert_alpha()
+		self.dwarfCartRight = pg.transform.flip(self.dwarfCartLeft,True,False)
+		self.facing = 1
+		self.imageDict = {"11":self.dwarf1Right,"12":self.dwarf2Right,"13":self.dwarf3Right, "14":self.dwarf4Right, "-11":self.dwarf1Left,"-12":self.dwarf2Left,"-13":self.dwarf3Left, "-14":self.dwarf4Left}
+		self.imgNum = 1
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y)
 		self.pos = vec(x + (self.rect.width/2), y + 20)
@@ -17,7 +30,12 @@ class Player(pg.sprite.Sprite):
 		self.acc = vec(0, 0)
 		self.lastPos = self.pos
 		self.onGround = False
-
+	def animate(self):
+		if self.game.ticks % 2 == 0:
+			self.imgNum +=1
+			if self.imgNum == 5:
+				self.imgNum = 1
+			self.image = self.imageDict[str(self.facing) + str(self.imgNum)]
 	def update(self):
 		self.onGround = False
 		for platform in self.game.platforms:
@@ -28,13 +46,20 @@ class Player(pg.sprite.Sprite):
 		self.acc = vec(0, PLAYER_GRAV)
 		if self.onGround:
 			self.acc.y = 0
+					
 			self.vel.y = 0
 		keys = pg.key.get_pressed()
 		if keys[pg.K_a]:
+			self.facing = -1		
 			self.acc.x = -PLAYER_ACC
 		if keys[pg.K_d]:
 			self.acc.x = PLAYER_ACC
-
+			self.facing = 1
+		
+						
+			
+		
+		
 		self.acc.x += self.vel.x * PLAYER_FRICTION
 		self.vel += self.acc
 		if(self.vel.y > 0):
@@ -45,8 +70,17 @@ class Player(pg.sprite.Sprite):
 			self.pos.x = 0
 
 		self.rect.midbottom = self.pos
-
-
+		
+		
+		if abs(self.vel.x) > 1 and self.onGround:
+			self.animate()
+		else:
+			if abs(self.vel.y) > 0:
+				self.image = self.imageDict[str(self.facing) + "2"]
+			else:
+				self.image = self.imageDict[str(self.facing) + "1"]
+		
+			
 	def jump(self):
 		if self.onGround:
 			self.vel.y = -18
@@ -133,9 +167,7 @@ class Tile(pg.sprite.Sprite):
 		self.groups = game.all_sprites, game.tiles
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-		self.image = pg.Surface((TILE_SIZE, TILE_SIZE))
-		self.image.fill((110,110,110))
-		#self.image = game.tileImage
+		self.image = game.tileImage
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
@@ -164,7 +196,7 @@ class Platform(pg.sprite.Sprite):
 
 		#print(self.rect.width, self.rect.height)
 		self.image = pg.Surface((self.rect.width, self.rect.height))
-		self.image.fill((255,0,0))
+		self.image = game.tileImage
 
 
 class EndPoint(pg.sprite.Sprite):
