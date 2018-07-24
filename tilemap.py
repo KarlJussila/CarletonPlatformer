@@ -7,6 +7,7 @@ class Map:
 		with open(fileName, 'rt') as f:
 			for line in f:
 				self.data.append(line)
+				print(line)
 
 		self.tileWidth = len(self.data[0])
 		self.tileHeight = len(self.data)

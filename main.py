@@ -43,11 +43,11 @@ class Game:
 		
 		               
 
-	def load_data(self, file="level1.txt"):
+	def load_data(self, file="level2.txt"):
 		game_folder = path.dirname(__file__)
 		assets_folder = path.join(game_folder, 'assets')
 		self.tileImage = pg.image.load(path.join(assets_folder, TILE_IMAGE)).convert()
-		self.map = Map(path.join(game_folder, 'level1.txt'))
+		self.map = Map(path.join(game_folder, file))
 
 		self.camera = Camera(self.map.width, self.map.height)
 		tileList = []
