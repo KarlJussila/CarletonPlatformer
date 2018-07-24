@@ -3,6 +3,7 @@ import random
 from settings import *
 from sprites import *
 from tilemap import *
+from collisionDetection import *
 from userInput import processInput
 from os import path
 import sys
@@ -18,6 +19,29 @@ class Game:
 		self.clock = pg.time.Clock()
 		self.font_name = pg.font.match_font(FONT_NAME)
 		self.events = processInput
+		self.bckimgs = []
+		self.rightWall = False
+		self.leftWall = False
+		self.bkg = [[None for i in range(40)]for j in range(30)]
+		#self.bkimgs = [pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\silverOre.png"), pg.image.load("assets\\emeraldOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\goldOre.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png")]
+		#beutiful list
+		self.bkimgs = [pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\emeraldOre.png"), pg.image.load("assets\\ironOre.png") , pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png")]
+		
+		#self.bkstrs = ["assets\\stone.png","assets\\stone.png","assets\\stone.png","assets\\stone.png","assets\\coalOre.png","assets\\coalOre.png","assets\\silverOre.png","assets\\emeraldOre.png","assets\\ironOre.png","assets\\goldOre.png"]
+		for c in self.bkimgs:
+			
+			dark = pg.Surface((c.get_width(), c.get_height()), flags=pg.SRCALPHA)
+			dark.fill((100, 75, 75, 100))
+			c.blit(dark, (0, 0), special_flags=pg.BLEND_RGBA_SUB)			
+		for row in range(int(HEIGHT/20)):
+			for col in range(int(WIDTH/20)):
+				b = random.randint(0, 70)
+				print(b, col)
+				self.bkg[row][col] = self.bkimgs[b]
+				
+		
+		
+		               
 
 	def load_data(self, file="level1.txt"):
 		game_folder = path.dirname(__file__)
@@ -33,8 +57,11 @@ class Game:
 					if tile == "s":
 						newTile = Tile(self, col * TILE_SIZE, row * TILE_SIZE)
 						tileList.append(newTile)
-					elif tile == "t":
-						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)
+						    
+					elif tile == "r":
+						TurretR(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)
+					elif tile == "l":
+						TurretL(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)						
 					elif tile == "e":
 						self.endPoint = EndPoint(self, col * TILE_SIZE, row * TILE_SIZE)
 					elif tile == "p":
@@ -59,6 +86,7 @@ class Game:
 		self.enemy_sprites = pg.sprite.Group()
 		self.turret_sprites = pg.sprite.Group()
 		self.projectile_sprites = pg.sprite.Group()
+		self.endpoint_sprites = pg.sprite.Group()
 
 		self.load_data()
 
@@ -84,139 +112,8 @@ class Game:
 		self.camera.update(self.player)
 
 		#Collision detection
-		hits = pg.sprite.spritecollide(self.player, self.platforms, False)
-		if hits:
-			for hit in hits:
-				#Up
-				if self.player.vel.y < 0:
-					if self.player.vel.x < 0:
-						#Bottom Collision
-						if self.player.lastPos.y + TILE_SIZE > hit.rect.bottom:
-							#print("down1")
-							print(self.player.vel)
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.bottom + TILE_SIZE + 1
-							self.player.rect.midbottom = self.player.pos
-						#Right Collision
-						else:
-							#print("right1")
-							self.player.vel.x = 0
-							self.player.rect.left = hit.rect.right + 1
-							self.player.rect.midbottom = self.player.pos
-					elif self.player.vel.x > 0:
-						#Bottom Collision
-						if self.player.lastPos.y + TILE_SIZE > hit.rect.bottom and self.player.lastPos.x +TILE_SIZE/2 > hit.rect.left:
-							#print("down2")
-							
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.bottom + TILE_SIZE + 1
-							self.player.rect.midbottom = self.player.pos
-						#Left Collision
-						else:
-							#print("left1")
-							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.left - (TILE_SIZE/2) - 1
-							self.player.rect.midbottom = self.player.pos
-					#Bottom Collision
-					else:
-						#print("down3")
-						self.player.vel.y = 0
-						self.player.pos.y = hit.rect.bottom + TILE_SIZE
-						self.player.rect.midbottom = self.player.pos
-				#Down
-				elif self.player.vel.y > 0:
-					if self.player.vel.x < 0:
-						#Top Collison
-						if self.player.lastPos.y < hit.rect.top:
-							#print("top0")
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.top - 1
-							self.player.rect.midbottom = self.player.pos
-							self.player.onGround = True
-						elif self.player.lastPos.y > hit.rect.top:
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.top - 1
-							self.player.onGround = True
-							self.player.rect.midbottom = self.player.pos
-							
-						#Right Collision
-						else:
-							
-							#print("right 2")
-							#print(hit.rect.top)
-							self.player.vel. x = 0
-							self.player.pos.x = hit.rect.right + (TILE_SIZE/2) + 1
-							self.player.rect.midbottom = self.player.pos
-					elif self.player.vel.x > 0:
-						#Top Collision
-					
-						if self.player.lastPos.y < hit.rect.top and self.player.lastPos.x +TILE_SIZE/2 > hit.rect.left:
-							#print("top1")
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.top - 1
-							self.player.rect.midbottom = self.player.pos
-							self.player.onGround = True
-						#Left Collision
-						else:
-							#print("top2")
-							#print(self.player.vel)
-							self.player.vel.y = 0
-							self.player.pos.y = hit.rect.top
-							self.player.rect.midbottom = self.player.pos
-							print(self.player.vel)
-					#Top Collision
-					else:
-						#print("top3")
-						print(self.player.vel)
-						self.player.vel.y = 0
-						self.player.pos.y = hit.rect.top - 1
-						self.player.rect.midbottom = self.player.pos
-						self.player.onGround = True
-				#On Ground
-				else:
-					
-					
-					#Right Collision
-					if self.player.vel.x < 0:
-						
-						
-						if self.player.lastPos.x + (TILE_SIZE/2) > hit.rect.right:
-							self.player.vel.x= 0
-							self.player.pos.x = hit.rect.right + (TILE_SIZE/2)+1
-							self.player.rect.midbottom = self.player.pos
-						
-					#Left Collision
-					else:
-						if self.player.lastPos.x - (TILE_SIZE/2) < hit.rect.left:
-							self.player.vel.x = 0
-							self.player.pos.x = hit.rect.left - (TILE_SIZE/2)-1
-							self.player.rect.midbottom = self.player.pos
-						
-
-
-
-		if(self.player.rect.top > self.map.height):
-			self.player.die("You have fallen out of the world!")
-
-		for enemy in self.enemy_sprites:
-			if enemy.rect.colliderect(self.player.rect):
-				if self.player.vel.y > 0:
-					if(self.player.lastPos.y < enemy.rect.top):
-						enemy.die()
-						self.player.vel.y = -12
-						break
-				self.player.die("You have run into an enemy :/")
-
-		for proj in self.projectile_sprites:
-			if proj.rect.colliderect(self.player.rect):
-				self.player.die("Oh no, you have been shot.")
-				break
-
-		if self.endPoint.rect.colliderect(self.player.rect):
-			for sprite in self.all_sprites:
-				sprite.kill()
-			self.load_data()
-
+		collisions(self)
+		
 		self.ticks += 1
 
 	# def events(self):
@@ -233,7 +130,11 @@ class Game:
 
 	def draw(self):
 		#Background
-		self.screen.fill(BACKGROUND_COLOR)
+		for row in range(int(HEIGHT/20)):
+			for col in range(int(WIDTH/20)):
+				 
+				self.screen.blit(self.bkg[row][col],(col*20,row*20))
+				
 
 		for sprite in self.all_sprites:
 			self.screen.blit(sprite.image, self.camera.apply(sprite))

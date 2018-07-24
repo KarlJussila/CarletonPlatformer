@@ -46,19 +46,16 @@ class Player(pg.sprite.Sprite):
 		self.acc = vec(0, PLAYER_GRAV)
 		if self.onGround:
 			self.acc.y = 0
-					
 			self.vel.y = 0
 		keys = pg.key.get_pressed()
-		if keys[pg.K_a]:
-			self.facing = -1		
+		if keys[pg.K_a] and not self.game.leftWall:
+			self.game.rightWall = False
+			self.facing = -1
 			self.acc.x = -PLAYER_ACC
-		if keys[pg.K_d]:
+		if keys[pg.K_d] and not self.game.rightWall:
+			self.game.leftWall = False
 			self.acc.x = PLAYER_ACC
 			self.facing = 1
-		
-						
-			
-		
 		
 		self.acc.x += self.vel.x * PLAYER_FRICTION
 		self.vel += self.acc
@@ -116,7 +113,7 @@ class Enemy1(pg.sprite.Sprite):
 	def die(self):
 		self.kill()
 
-class Turret(pg.sprite.Sprite):
+class TurretR(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
 		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -136,12 +133,36 @@ class Turret(pg.sprite.Sprite):
 
 	def fireProjectile(self):
 		if self.game.ticks % self.delay == 0:
-			Projectile(self.game, self)
+			ProjectileR(self.game, self)
+
+	def die(self):
+		self.kill()
+class TurretL(pg.sprite.Sprite):
+	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
+		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.game = game
+		self.image = pg.Surface((w, h))
+		self.image.fill(BLUE)
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.width = w
+		self.height = h
+		self.direction = direction
+		self.vel = vel
+		self.delay = delay
+
+	def update(self):
+		self.fireProjectile()
+
+	def fireProjectile(self):
+		if self.game.ticks % self.delay == 0:
+			ProjectileL(self.game, self)
 
 	def die(self):
 		self.kill()
 
-class Projectile(pg.sprite.Sprite):
+class ProjectileR(pg.sprite.Sprite):
 	def __init__(self, game, parent):
 		self.groups = game.all_sprites, game.projectile_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -161,6 +182,53 @@ class Projectile(pg.sprite.Sprite):
 				self.kill()
 		if self.rect.left > self.game.map.width:
 			self.kill()
+class TurretL(pg.sprite.Sprite):
+	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
+		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.game = game
+		self.image = pg.Surface((w, h))
+		self.image.fill(BLUE)
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.width = w
+		self.height = h
+		self.direction = direction
+		self.vel = vel
+		self.delay = delay
+
+	def update(self):
+		self.fireProjectile()
+
+	def fireProjectile(self):
+		if self.game.ticks % self.delay == 0:
+			ProjectileL(self.game, self)
+
+	def die(self):
+		self.kill()
+
+class ProjectileL(pg.sprite.Sprite):
+	def __init__(self, game, parent):
+		self.groups = game.all_sprites, game.projectile_sprites
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.game = game
+		self.parent = parent
+		self.image = pg.Surface((10, 5))
+		self.image.fill(YELLOW)
+		self.rect = self.image.get_rect()
+		self.rect.center = self.parent.rect.center
+		self.width = 10
+		self.height = 5
+
+	def update(self):
+		self.rect.x -= self.parent.vel * self.parent.direction
+		for tile in self.game.tiles:
+			if tile.rect.colliderect(self.rect):
+				self.kill()
+		if self.rect.left > self.game.map.width:
+			self.kill()
+
+
 
 class Tile(pg.sprite.Sprite):
 	def __init__(self, game, x, y):
@@ -201,11 +269,14 @@ class Platform(pg.sprite.Sprite):
 
 class EndPoint(pg.sprite.Sprite):
 	def __init__(self, game, x, y):
-		self.groups = game.all_sprites
+		
+		
+		self.groups = game.all_sprites, game.endpoint_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
 		self.image = pg.Surface((TILE_SIZE, TILE_SIZE))
-		self.image.fill((150,0,150))
+		img = pg.image.load("assets\\goldOre.png")
+		self.image = img
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y

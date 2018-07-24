@@ -1,4 +1,4 @@
-TITLE = "Title"
+TITLE = "Mine Man"
 FILEPATH = "assets\\"
 
 WIDTH = 800
@@ -34,3 +34,4 @@ PLAYER_IMG2 = 'dwarf2.png'
 PLAYER_IMG3 = 'dwarf3.png'
 PLAYER_IMG4 = 'dwarf4.png'
 PLAYER_C = 'minercart.png'
+ENDG = 'goldOre'
