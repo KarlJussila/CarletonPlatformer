@@ -23,24 +23,19 @@ class Game:
 		self.rightWall = False
 		self.leftWall = False
 		self.bkg = [[None for i in range(40)]for j in range(30)]
-		#self.bkimgs = [pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\silverOre.png"), pg.image.load("assets\\emeraldOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\goldOre.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png")]
+		#self.bkimgs = [pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "silverOre.png"), pg.image.load(FILEPATH + "emeraldOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "goldOre.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png")]
 		#beutiful list
-		self.bkimgs = [pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\stone.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\emeraldOre.png"), pg.image.load("assets\\ironOre.png") , pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\ironOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png"), pg.image.load("assets\\coalOre.png")]
+		self.bkimgs = [pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "emeraldOre.png"), pg.image.load(FILEPATH + "ironOre.png") , pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png")]
 		
-		#self.bkstrs = ["assets\\stone.png","assets\\stone.png","assets\\stone.png","assets\\stone.png","assets\\coalOre.png","assets\\coalOre.png","assets\\silverOre.png","assets\\emeraldOre.png","assets\\ironOre.png","assets\\goldOre.png"]
+		#self.bkstrs = [FILEPATH + "stone.png",FILEPATH + "stone.png",FILEPATH + "stone.png",FILEPATH + "stone.png",FILEPATH + "coalOre.png",FILEPATH + "coalOre.png",FILEPATH + "silverOre.png",FILEPATH + "emeraldOre.png",FILEPATH + "ironOre.png",FILEPATH + "goldOre.png"]
 		for c in self.bkimgs:
-			
 			dark = pg.Surface((c.get_width(), c.get_height()), flags=pg.SRCALPHA)
 			dark.fill((100, 75, 75, 100))
 			c.blit(dark, (0, 0), special_flags=pg.BLEND_RGBA_SUB)			
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
 				b = random.randint(0, 70)
-				print(b, col)
 				self.bkg[row][col] = self.bkimgs[b]
-				
-		
-		
 		               
 
 	def load_data(self, file="level2.txt"):
@@ -116,23 +111,10 @@ class Game:
 		
 		self.ticks += 1
 
-	# def events(self):
-	# 	for event in pg.event.get():
-	# 		if event.type == pg.QUIT:
-	# 			if self.playing:
-	# 				pg.display.quit()
-	# 				pg.quit()
-	# 				sys.exit()
-	# 			self.running = False
-	# 		if event.type == pg.KEYDOWN:
-	# 			if event.key == pg.K_SPACE:
-	# 				self.player.jump()
-
 	def draw(self):
 		#Background
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
-				 
 				self.screen.blit(self.bkg[row][col],(col*20,row*20))
 				
 

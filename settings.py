@@ -1,5 +1,5 @@
 TITLE = "Mine Man"
-FILEPATH = "assets\\"
+FILEPATH = "assets/"
 
 WIDTH = 800
 HEIGHT = 600

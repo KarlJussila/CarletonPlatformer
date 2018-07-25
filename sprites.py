@@ -275,7 +275,7 @@ class EndPoint(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
 		self.image = pg.Surface((TILE_SIZE, TILE_SIZE))
-		img = pg.image.load("assets\\goldOre.png")
+		img = pg.image.load(FILEPATH + "goldOre.png")
 		self.image = img
 		self.rect = self.image.get_rect()
 		self.rect.x = x
