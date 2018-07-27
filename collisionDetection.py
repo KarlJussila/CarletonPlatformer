@@ -1,6 +1,8 @@
+#Imports
 import pygame as pg
 from settings import *
 vec = pg.math.Vector2
+
 def collisions(game):
 	hits = pg.sprite.spritecollide(game.player, game.tiles, False)
 	
@@ -14,6 +16,9 @@ def collisions(game):
 		game.rightWall = False
 		game.leftWall = False
 	
+	#####################################################################
+	#--------------------TILE COLLISIONS WITH PLAYER--------------------#
+	#####################################################################
 	if hits:
 		for hit in hits:
 			
@@ -200,13 +205,16 @@ def collisions(game):
 					game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
 					game.player.rect.midbottom = game.player.pos
 					break
-					
+	#####################################################################
+	#--------------------TILE COLLISIONS WITH PLAYER--------------------#
+	#####################################################################			
 
 
-
+	#Player falling out of the world
 	if(game.player.rect.top > game.map.height):
 		game.player.die("You have fallen out of the world!")
 
+	#Enemy collision with players
 	for enemy in game.enemy_sprites:
 		if enemy.rect.colliderect(game.player.rect):
 			if game.player.vel.y > 0:
@@ -216,6 +224,12 @@ def collisions(game):
 					break
 			game.player.die("You have run into an enemy :/")
 
+	#Spike collision with players
+	for spike in spike_sprites:
+		if spike.rect.colliderect(game.player.rect):
+			game.player.die("You were impaled")
+
+	#Turret projectile collision with player
 	for proj in game.projectile_sprites:
 		if proj.rect.colliderect(game.player.rect):
 			game.player.die("Oh no, you have been shot.")
@@ -227,9 +241,9 @@ def collisions(game):
 					prj.kill()
 			proj.kill()
 			
-
+	#Endpoint collision
 	if pg.sprite.spritecollideany(game.player, game. endpoint_sprites):
 		for sprite in game.all_sprites:
 			sprite.kill()
-		game.load_data()
+		game.mainMenu()
     

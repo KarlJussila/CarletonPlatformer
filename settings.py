@@ -1,3 +1,4 @@
+#Main settings
 TITLE = "Mine Man"
 FILEPATH = "assets\\"
 
@@ -6,6 +7,7 @@ HEIGHT = 600
 
 FPS = 30
 
+#Font
 FONT_NAME = "arial"
 
 #Colors
