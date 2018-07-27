@@ -4,13 +4,14 @@ from settings import *
 from sprites import *
 from tilemap import *
 from collisionDetection import *
-from userInput import processInput
+from userInput import *
 from os import path
 import sys
 
 
 class Game:
 	def __init__(self):
+		
 		self.running = True
 		pg.init()
 		pg.mixer.init()
@@ -18,12 +19,16 @@ class Game:
 		pg.display.set_caption(TITLE)
 		self.clock = pg.time.Clock()
 		self.font_name = pg.font.match_font(FONT_NAME)
+		self.music = pg.mixer.music.load(FILEPATH +"caveMusic.mp3")
 		self.events = processInput
+		self.menuEvents = menuInput
+		self.level = "level2.txt"
 		self.bckimgs = []
 		self.rightWall = False
 		self.leftWall = False
 		self.bkg = [[None for i in range(40)]for j in range(30)]
 		#self.bkimgs = [pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "silverOre.png"), pg.image.load(FILEPATH + "emeraldOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "goldOre.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png")]
+		pg.mixer.music.play(-1, 0.0)
 		#beutiful list
 		self.bkimgs = [pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "emeraldOre.png"), pg.image.load(FILEPATH + "ironOre.png") , pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png")]
 		
@@ -39,6 +44,7 @@ class Game:
 		               
 
 	def load_data(self, file="level2.txt"):
+		
 		game_folder = path.dirname(__file__)
 		assets_folder = path.join(game_folder, 'assets')
 		self.tileImage = pg.image.load(path.join(assets_folder, TILE_IMAGE)).convert()
@@ -54,13 +60,15 @@ class Game:
 						tileList.append(newTile)
 						    
 					elif tile == "r":
-						TurretR(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)
+						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5, 1)
 					elif tile == "l":
-						TurretL(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5)						
+						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, 5, -1)						
 					elif tile == "e":
 						self.endPoint = EndPoint(self, col * TILE_SIZE, row * TILE_SIZE)
 					elif tile == "p":
 						self.player = Player(self, col * TILE_SIZE, row * TILE_SIZE)
+					elif tile == "i":
+						spike(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1,)						
 					else:
 						Enemy1(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, int(tile))
 				else:
@@ -69,11 +77,21 @@ class Game:
 						tileList = []
 		if tileList != []:
 			Platform(tileList,self)				
-
-	def new(self):
+	def mainMenu(self):
+		self.playing = False
+		print("Opened main menu")
+		while not self.playing:
+			self.clock.tick(FPS)
+			self.screen.fill(BACKGROUND_COLOR)
+			clicked = self.menuEvents(self)
+			for button in self.main_menu:
+				button.update(clicked)
+				button.draw()
+			pg.display.flip()
+	def new(self, level=None):
 
 		self.ticks = 0
-
+		self.level = level
 		self.all_sprites = pg.sprite.Group()
 		self.tiles = pg.sprite.Group()
 		self.platforms = pg.sprite.Group()
@@ -82,16 +100,37 @@ class Game:
 		self.turret_sprites = pg.sprite.Group()
 		self.projectile_sprites = pg.sprite.Group()
 		self.endpoint_sprites = pg.sprite.Group()
+		self.button_sprites = pg.sprite.Group()
+		self.main_menu = pg.sprite.Group()
+		self.game_over_menu = pg.sprite.Group()
 
-		self.load_data()
+		buttonImage = pg.Surface((100, 35))
+		buttonImage.fill((0,220,0))
+
+		buttonHoverImage = pg.Surface((100, 35))
+		buttonHoverImage.fill((0,255,0))
+
+		#Main Menu
+		self.level1Button = Button(self, 100, 100, buttonImage, buttonHoverImage, lambda: self.new("level1.txt"), self.main_menu)
+		self.level2Button = Button(self, 100, 200, buttonImage, buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
+		self.level3Button = Button(self, 100, 300, buttonImage, buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
+
+		#Game Over
+		self.mainMenuButton = Button(self, 100, 100, buttonImage, buttonHoverImage, self.mainMenu, self.game_over_menu)
+		self.restartButton = Button(self, 100, 200, buttonImage, buttonHoverImage, lambda: self.new(self.level), self.game_over_menu)
+
+		if level == None:
+			self.mainMenu()
+
+		self.load_data(level)
 
 		self.all_sprites.add(self.player)
 		self.player_sprite.add(self.player)
 
 		self.run()
-
 	def run(self):
 		self.playing = True
+		
 		while self.playing:
 			self.clock.tick(FPS)
 			self.events(self)
@@ -108,6 +147,7 @@ class Game:
 
 		#Collision detection
 		collisions(self)
+		self.player.rect.midbottom = self.player.pos
 		
 		self.ticks += 1
 
@@ -119,7 +159,8 @@ class Game:
 				
 
 		for sprite in self.all_sprites:
-			self.screen.blit(sprite.image, self.camera.apply(sprite))
+			cameraRect = self.camera.apply(sprite)    
+			self.screen.blit(sprite.image, cameraRect)
 
 		#Update the display
 		pg.display.flip()
@@ -131,14 +172,16 @@ class Game:
 		pg.display.flip()
 		self.waitForKey()
 
-	def displayGameOverScreen(self):
-		if not self.running:
-			self.new()
-		self.screen.fill(BACKGROUND_COLOR)
-		self.drawText("Game Over", 48, (50,50,50), WIDTH/2, HEIGHT * 1/4)
-		self.drawText("(Press any key to restart)", 20, (50,50,50), WIDTH/2, HEIGHT * 2/3)
-		pg.display.flip()
-		self.waitForKey()
+	def gameOverMenu(self):
+		self.playing = False
+		while not self.playing:
+			self.clock.tick(FPS)
+			self.screen.fill(BACKGROUND_COLOR)
+			clicked = self.menuEvents(self)
+			for button in self.game_over_menu:
+				button.update(clicked)
+				button.draw()
+			pg.display.flip()
 
 	# def displayVictoryScreen(self):
 	# 	if not self.running:
@@ -169,9 +212,8 @@ class Game:
 		self.screen.blit(text_surface, text_rect)
 
 g = Game()
-g.displayMainMenu()
 while g.running:
 	g.new()
-	g.displayGameOverScreen()
+	
 
 pg.quit()

@@ -1,5 +1,5 @@
 TITLE = "Mine Man"
-FILEPATH = "assets/"
+FILEPATH = "assets\\"
 
 WIDTH = 800
 HEIGHT = 600
@@ -33,5 +33,4 @@ PLAYER_IMG1 = 'dwarf1.png'
 PLAYER_IMG2 = 'dwarf2.png'
 PLAYER_IMG3 = 'dwarf3.png'
 PLAYER_IMG4 = 'dwarf4.png'
-PLAYER_C = 'minercart.png'
 ENDG = 'goldOre'

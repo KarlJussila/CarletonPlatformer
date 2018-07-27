@@ -79,7 +79,7 @@ def collisions(game):
 						continue
 					game.player.vel.y = 0
 					game.player.pos.y = hit.rect.bottom + game.player.rect.height + 1
-					game.player.rect.top = hit.rect.bottom + 1
+					game.player.rect.midbottom = game.player.pos
 					break
 				else:
 					if game.player.vel.x > 0:
@@ -92,13 +92,13 @@ def collisions(game):
 							print("B2")
 							game.player.vel.y = 0
 							game.player.pos.y = hit.rect.bottom + game.player.rect.height + 1
-							game.player.rect.top = hit.rect.bottom + 1
+							game.player.rect.midbottom = game.player.pos
 							break
 						game.rightWall = True
 						print("L1")
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.left - (game.player.rect.width/2) - 2
-						game.player.rect.right = hit.rect.left - 2
+						game.player.rect.midbottom = game.player.pos
 						break
 					else:
 						#Collision is from the right
@@ -110,13 +110,13 @@ def collisions(game):
 							print("B3")
 							game.player.vel.y = 0
 							game.player.pos.y = hit.rect.bottom + game.player.rect.height + 1
-							game.player.rect.top = hit.rect.bottom + 1
+							game.player.rect.midbottom = game.player.pos
 							break
 						print("R1")
 						game.leftWall = True
 						game.player.vel.x = 0
-						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 1
-						game.player.rect.left = hit.rect.right + 1
+						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
+						game.player.rect.midbottom = game.player.pos
 						break
 			elif game.player.vel.y > 0:
 
@@ -125,7 +125,7 @@ def collisions(game):
 				if hit.rect.collidepoint(game.player.lastPos.x + (game.player.rect.width/2), game.player.lastPos.y + 2) or hit.rect.collidepoint(game.player.lastPos.x - (game.player.rect.width/2), game.player.lastPos.y + 2):
 					game.player.vel.y = 0
 					game.player.pos.y = hit.rect.top - 1
-					game.player.rect.bottom = hit.rect.top - 1
+					game.player.rect.midbottom = game.player.pos
 					game.player.onGround = True
 					break
 				##############################################
@@ -141,7 +141,7 @@ def collisions(game):
 					print("T1")
 					game.player.vel.y = 0
 					game.player.pos.y = hit.rect.top - 1
-					game.player.rect.bottom = hit.rect.top - 1
+					game.player.rect.midbottom = game.player.pos
 					game.player.onGround = True
 					break
 				else:
@@ -155,14 +155,14 @@ def collisions(game):
 							print("T2")
 							game.player.vel.y = 0
 							game.player.pos.y = hit.rect.top - 1
-							game.player.rect.bottom = hit.rect.top - 1
+							game.player.rect.midbottom = game.player.pos
 							game.player.onGround = True
 							break
 						game.rightWall = True
 						print("L2")
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.left - (game.player.rect.width/2) - 2
-						game.player.rect.right = hit.rect.left - 2
+						game.player.rect.midbottom = game.player.pos
 						break
 					elif game.player.vel.x < 0:
 						#Collision is from the right
@@ -174,31 +174,31 @@ def collisions(game):
 							print("T3")
 							game.player.vel.y = 0
 							game.player.pos.y = hit.rect.top - 1
-							game.player.rect.bottom = hit.rect.top - 1
+							game.player.rect.midbottom = game.player.pos
 							game.player.onGround = True
 							break
 						game.leftWall = True
 						print("L3")
 						game.player.vel.x = 0
-						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 1
-						game.player.rect.left = hit.rect.right + 1
+						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
+						game.player.rect.midbottom = game.player.pos
 						break
 			else:
-				if game.player.vel.x > 0:
+				if game.player.vel.x > 0 and not game.rightWall:
 					#Collision is from the left
 					game.rightWall = True
 					print("L4")
 					game.player.vel.x = 0
 					game.player.pos.x = hit.rect.left - (game.player.rect.width/2) - 2
-					game.player.rect.right = hit.rect.left - 2
+					game.player.rect.midbottom = game.player.pos
 					break
-				elif game.player.vel.x < 0:
+				elif game.player.vel.x < 0 and not game.leftWall:
 					#Collision is from the right
 					game.leftWall = True
 					print("R2")
 					game.player.vel.x = 0
-					game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 1
-					game.player.rect.left = hit.rect.right + 1
+					game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
+					game.player.rect.midbottom = game.player.pos
 					break
 					
 
@@ -220,6 +220,13 @@ def collisions(game):
 		if proj.rect.colliderect(game.player.rect):
 			game.player.die("Oh no, you have been shot.")
 			break
+		c =pg.sprite.spritecollideany(proj, game.projectile_sprites)
+		if(proj != c):
+			for prj in game.projectile_sprites:
+				if(prj == c):
+					prj.kill()
+			proj.kill()
+			
 
 	if pg.sprite.spritecollideany(game.player, game. endpoint_sprites):
 		for sprite in game.all_sprites:

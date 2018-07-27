@@ -18,8 +18,7 @@ class Player(pg.sprite.Sprite):
 		self.dwarf3Right = pg.transform.flip(self.dwarf3Left,True,False)
 		self.dwarf4Left = pg.image.load(FILEPATH + PLAYER_IMG4).convert_alpha()
 		self.dwarf4Right = pg.transform.flip(self.dwarf4Left,True,False)
-		self.dwarfCartLeft = pg.image.load(FILEPATH + PLAYER_C).convert_alpha()
-		self.dwarfCartRight = pg.transform.flip(self.dwarfCartLeft,True,False)
+		
 		self.facing = 1
 		self.imageDict = {"11":self.dwarf1Right,"12":self.dwarf2Right,"13":self.dwarf3Right, "14":self.dwarf4Right, "-11":self.dwarf1Left,"-12":self.dwarf2Left,"-13":self.dwarf3Left, "-14":self.dwarf4Left}
 		self.imgNum = 1
@@ -86,8 +85,10 @@ class Player(pg.sprite.Sprite):
 			self.onGround = False
 
 	def die(self, cause="You have died from unknown causes."):
+		self.kill()
 		self.game.playing = False
 		print(cause)
+		self.game.gameOverMenu()
 
 
 class Enemy1(pg.sprite.Sprite):
@@ -96,7 +97,10 @@ class Enemy1(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
 		self.image = pg.Surface((w, h))
-		self.image.fill(RED)
+		self.img = pg.image.load(FILEPATH + "enemy.png")
+		self.img2 = pg.image.load(FILEPATH + "enemy2.png")
+		self.image = self.img
+		self.animate = 1
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y)
 		self.width = w
@@ -105,6 +109,14 @@ class Enemy1(pg.sprite.Sprite):
 		self.vel = vel
 
 	def update(self):
+		if self.game.ticks %5 == 0:
+			if self.animate == 1:
+				self.image = self.img2
+				self.animate = 0
+			else:
+				self.image = self.img
+				self.animate = 1
+				
 		self.rect.x += self.vel * self.direction
 		for tile in self.game.tiles:
 			if tile.rect.colliderect(self.rect):
@@ -112,64 +124,76 @@ class Enemy1(pg.sprite.Sprite):
 
 	def die(self):
 		self.kill()
-
-class TurretR(pg.sprite.Sprite):
-	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
-		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
+class spike(pg.sprite.Sprite):
+	def __init__(self, game, x, y, w, h, direction = -1, vel = 5):
+		self.groups = game.all_sprites, game.enemy_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-		self.image = pg.Surface((w, h))
-		self.image.fill(BLUE)
+		self.image = pg.Surface((20, 10))
+		self.image = pg.image.load(FILEPATH + "spikes.png")
+		self.animate = 1
 		self.rect = self.image.get_rect()
-		self.rect.topleft = (x, y)
+		self.rect.topleft = (x, y+10)
 		self.width = w
 		self.height = h
 		self.direction = direction
 		self.vel = vel
+
+	def update(self):
+		pass
+
+	def die(self):
+		self.game.player.die()
+
+class Turret(pg.sprite.Sprite):
+	def __init__(self, game, x, y, w, h, d, vel = 5, delay = int(FPS * 2.5)):
+		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
+		self.direction = d
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.game = game
+		self.img = pg.image.load(FILEPATH + "turret.png")
+		self.img2 = pg.transform.flip(self.img, True, False)
+		self.image = pg.Surface((w, h))
+		print(d)
+		if(d == 1):
+		        self.image = self.img
+		else:
+			self.image = self.img2
+		
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.width = w
+		self.height = h
+		
+		self.vel = vel
 		self.delay = delay
+		self.delay = int(FPS*2.5)
 
 	def update(self):
 		self.fireProjectile()
 
 	def fireProjectile(self):
 		if self.game.ticks % self.delay == 0:
-			ProjectileR(self.game, self)
-
-	def die(self):
-		self.kill()
-class TurretL(pg.sprite.Sprite):
-	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
-		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
-		pg.sprite.Sprite.__init__(self, self.groups)
-		self.game = game
-		self.image = pg.Surface((w, h))
-		self.image.fill(BLUE)
-		self.rect = self.image.get_rect()
-		self.rect.topleft = (x, y)
-		self.width = w
-		self.height = h
-		self.direction = direction
-		self.vel = vel
-		self.delay = delay
-
-	def update(self):
-		self.fireProjectile()
-
-	def fireProjectile(self):
-		if self.game.ticks % self.delay == 0:
-			ProjectileL(self.game, self)
+			
+			Projectile(self.game, self)
 
 	def die(self):
 		self.kill()
 
-class ProjectileR(pg.sprite.Sprite):
+
+class Projectile(pg.sprite.Sprite):
 	def __init__(self, game, parent):
 		self.groups = game.all_sprites, game.projectile_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
+		self.img = pg.image.load(FILEPATH + "projectile.png")
+		self.img2 = pg.transform.flip(self.img, True, False)
 		self.parent = parent
 		self.image = pg.Surface((10, 5))
-		self.image.fill(YELLOW)
+		if self.parent.direction == 1:
+			self.image = self.img
+		else:
+			self.image = self.img2
 		self.rect = self.image.get_rect()
 		self.rect.center = self.parent.rect.center
 		self.width = 10
@@ -182,52 +206,6 @@ class ProjectileR(pg.sprite.Sprite):
 				self.kill()
 		if self.rect.left > self.game.map.width:
 			self.kill()
-class TurretL(pg.sprite.Sprite):
-	def __init__(self, game, x, y, w, h, direction = 1, vel = 5, delay = int(FPS * 2.5)):
-		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
-		pg.sprite.Sprite.__init__(self, self.groups)
-		self.game = game
-		self.image = pg.Surface((w, h))
-		self.image.fill(BLUE)
-		self.rect = self.image.get_rect()
-		self.rect.topleft = (x, y)
-		self.width = w
-		self.height = h
-		self.direction = direction
-		self.vel = vel
-		self.delay = delay
-
-	def update(self):
-		self.fireProjectile()
-
-	def fireProjectile(self):
-		if self.game.ticks % self.delay == 0:
-			ProjectileL(self.game, self)
-
-	def die(self):
-		self.kill()
-
-class ProjectileL(pg.sprite.Sprite):
-	def __init__(self, game, parent):
-		self.groups = game.all_sprites, game.projectile_sprites
-		pg.sprite.Sprite.__init__(self, self.groups)
-		self.game = game
-		self.parent = parent
-		self.image = pg.Surface((10, 5))
-		self.image.fill(YELLOW)
-		self.rect = self.image.get_rect()
-		self.rect.center = self.parent.rect.center
-		self.width = 10
-		self.height = 5
-
-	def update(self):
-		self.rect.x -= self.parent.vel * self.parent.direction
-		for tile in self.game.tiles:
-			if tile.rect.colliderect(self.rect):
-				self.kill()
-		if self.rect.left > self.game.map.width:
-			self.kill()
-
 
 
 class Tile(pg.sprite.Sprite):
@@ -280,3 +258,31 @@ class EndPoint(pg.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
+		
+class Button(pg.sprite.Sprite):
+	def __init__(self, game, x, y, image, hoverImage, function, group):
+		self.groups = game.button_sprites, group
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.game = game
+		self.noHoverImage = image
+		self.hoverImage = hoverImage
+		self.image = image
+		self.x = x
+		self.y = y
+		self.rect = image.get_rect()
+		self.rect.topleft = (x,y)
+		self.function = function
+
+
+	def update(self, click):
+		mousePos = vec(pg.mouse.get_pos())
+		mousePressed = pg.mouse.get_pressed()
+		if self.rect.collidepoint(mousePos.x, mousePos.y):
+			self.image = self.hoverImage
+			if click:
+				self.function()
+
+		else:
+			self.image = self.noHoverImage
+	def draw(self):
+		self.game.screen.blit(self.image, self.rect)
