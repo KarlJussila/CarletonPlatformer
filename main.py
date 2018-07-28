@@ -23,7 +23,7 @@ class Game:
 
 		#Initializing variables
 		self.font_name = pg.font.match_font(FONT_NAME)
-		self.music = pg.mixer.music.load(FILEPATH +"caveMusic.mp3")
+		self.music = pg.mixer.music.load(FILEPATH +"solarspire-jungle.wav")
 		self.events = processInput
 		self.menuEvents = menuInput
 		self.level = "level2.txt"
@@ -48,7 +48,7 @@ class Game:
 				b = random.randint(0, 70)
 				self.bkg[row][col] = self.bkimgs[b]
 		               
-
+				
 	#Level loading function
 	def load_data(self, file="level2.txt"):
 		
@@ -84,7 +84,9 @@ class Game:
 						self.player = Player(self, col * TILE_SIZE, row * TILE_SIZE)
 					#Spikes
 					elif tile == "i":
-						Spike(self, col * TILE_SIZE, row * TILE_SIZE, 20, 10)			
+						Spike(self, col * TILE_SIZE, row * TILE_SIZE, 20, 10)	
+					elif tile == "n":
+						Enemy2(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20)					
 					#Green cave creature			
 					else:
 						Enemy1(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, int(tile))

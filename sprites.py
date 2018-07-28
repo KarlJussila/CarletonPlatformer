@@ -170,7 +170,67 @@ class Enemy1(pg.sprite.Sprite):
 	def die(self):
 		#Sprite kill
 		self.kill()
+class Enemy2(pg.sprite.Sprite):
+	def __init__(self, game, x, y, w, h, direction = -1, vel = 5):
+		#Adding to sprite groups
+		self.groups = game.all_sprites, game.enemy_sprites
 
+		#Sprite init function
+		pg.sprite.Sprite.__init__(self, self.groups)
+
+		#Initializing variables
+		self.game = game
+		self.direction = 0
+		self.directiony = 0
+		self.image = pg.Surface((w, h))
+		self.img = pg.image.load(FILEPATH + "ghost.png")
+		self.img2 = pg.image.load(FILEPATH + "ghost2.png")
+		self.image = self.img
+		self.animate = 1
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.width = w
+		self.height = h
+			
+		
+		self.vel = vel
+
+	#Updating pos, direction, etc.
+	def update(self):
+		#Animating sprite
+		if self.game.ticks % 5 == 0:
+			if self.animate == 1:
+				self.image = self.img2
+				self.animate = 0
+			else:
+				self.image = self.img
+				self.animate = 1
+
+		#Moving enemy
+		if(self.game.player.pos.y > self.rect.y):
+		        self.directiony = 1
+		elif(self.game.player.pos.y < self.rect.y):
+		        self.directiony = -1	
+		else:
+			self.directiony = 0
+		if(self.game.player.pos.x > self.rect.x):
+		        self.direction = 1
+		elif(self.game.player.pos.x < self.rect.x):
+		        self.direction = -1	
+		else:
+			self.direction = 0
+
+		#Changing direction if necessary
+						
+					
+			
+		self.rect.x += self.vel * self.direction
+		self.rect.y += self.vel * self.directiony	
+
+	#Kill the enemy
+	def die(self):
+		#Sprite kill
+		self.kill()
 #--------------------PLEASE CHANGE TO BE LESS JANKY, EVAN--------------------#
 class Spike(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h):

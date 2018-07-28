@@ -225,7 +225,7 @@ def collisions(game):
 			game.player.die("You have run into an enemy :/")
 
 	#Spike collision with players
-	for spike in spike_sprites:
+	for spike in game.spike_sprites:
 		if spike.rect.colliderect(game.player.rect):
 			game.player.die("You were impaled")
 
