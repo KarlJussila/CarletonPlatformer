@@ -140,6 +140,7 @@ class Game:
 		self.button_sprites = pg.sprite.Group()
 		self.main_menu = pg.sprite.Group()
 		self.game_over_menu = pg.sprite.Group()
+		self.ghost_sprites = pg.sprite.Group()
 
 		#TEMPORARY BUTTON IMAGES
 		buttonImage = pg.Surface((100, 35))
@@ -150,13 +151,13 @@ class Game:
 		########################
 
 		#Main menu
-		self.level1Button = Button(self, 100, 100, buttonImage, buttonHoverImage, lambda: self.new("level1.txt"), self.main_menu)
-		self.level2Button = Button(self, 100, 200, buttonImage, buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
-		self.level3Button = Button(self, 100, 300, buttonImage, buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
+		self.level1Button = Button(self, 100, 100, pg.image.load(FILEPATH + "level1Button.png"), buttonHoverImage, lambda: self.new("level1.txt"), self.main_menu)
+		self.level2Button = Button(self, 100, 200, pg.image.load(FILEPATH + "level2Button.png"), buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
+		self.level3Button = Button(self, 100, 300, pg.image.load(FILEPATH + "level3Button.png"), buttonHoverImage, lambda: self.new("level3.txt"), self.main_menu)
 
 		#Game over menu
-		self.mainMenuButton = Button(self, 100, 100, buttonImage, buttonHoverImage, self.mainMenu, self.game_over_menu)
-		self.restartButton = Button(self, 100, 200, buttonImage, buttonHoverImage, lambda: self.new(self.level), self.game_over_menu)
+		self.mainMenuButton = Button(self, 100, 100, pg.image.load(FILEPATH + "mainMenuButton.png"), buttonHoverImage, self.mainMenu, self.game_over_menu)
+		self.restartButton = Button(self, 100, 200, pg.image.load(FILEPATH + "respawnButton.png"), buttonHoverImage, lambda: self.new(self.level), self.game_over_menu)
 
 		#Going to main menu if no level has been selected
 		if level == None:
@@ -192,6 +193,10 @@ class Game:
 		#Updating enemies
 		for enemy in self.enemy_sprites:
 			enemy.update()
+		for ghost in self.ghost_sprites:
+			ghost.update()		
+		for turret in self.turret_sprites:
+			turret.update()		
 		for proj in self.projectile_sprites:
 			proj.update()
 

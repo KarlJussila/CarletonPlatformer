@@ -170,10 +170,11 @@ class Enemy1(pg.sprite.Sprite):
 	def die(self):
 		#Sprite kill
 		self.kill()
+
 class Enemy2(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h, direction = -1, vel = 5):
 		#Adding to sprite groups
-		self.groups = game.all_sprites, game.enemy_sprites
+		self.groups = game.all_sprites, game.ghost_sprites
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -254,7 +255,7 @@ class Spike(pg.sprite.Sprite):
 class Turret(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h, d, vel = 5, delay = int(FPS * 2.5)):
 		#Adding to sprite groups
-		self.groups = game.all_sprites, game.enemy_sprites, game.turret_sprites
+		self.groups = game.all_sprites, game.turret_sprites
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)

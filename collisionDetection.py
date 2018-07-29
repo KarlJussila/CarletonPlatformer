@@ -224,6 +224,24 @@ def collisions(game):
 					break
 			game.player.die("You have run into an enemy :/")
 
+	for ghost in game.ghost_sprites:
+		if ghost.rect.colliderect(game.player.rect):
+			if game.player.vel.y > 0:
+				if(game.player.lastPos.y < ghost.rect.top):
+					ghost.die()
+					game.player.vel.y = -12
+					break
+			game.player.die("You have run into an enemy :/")
+
+	for turret in game.turret_sprites:
+		if turret.rect.colliderect(game.player.rect):
+			if game.player.vel.y > 0:
+				if(game.player.lastPos.y < turret.rect.top):
+					turret.die()
+					game.player.vel.y = -12
+					break
+			game.player.die("You have run into an enemy :/")
+
 	#Spike collision with players
 	for spike in game.spike_sprites:
 		if spike.rect.colliderect(game.player.rect):

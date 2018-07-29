@@ -44,3 +44,28 @@ class Camera:
 
 		#Updating camera rectangle
 		self.camera = pg.Rect(x, y, self.width, self.height)
+
+def generateMap(self,game):
+	#Creating empty 2D list
+	mapList = [[None for i in range(game.map.tileWidth)] for j in range(game.map.tileHeight)]
+	returnString = ""
+
+	#Filling mapList
+	for tile in game.tiles:
+		mapList[tile.rect.top/TILE_SIZE][tile.rect.left/TILE_SIZE] = "s"
+	for enemy in game.enemy_sprites:
+		mapList[enemy.rect.top/TILE_SIZE][enemy.rect.left/TILE_SIZE] = str(enemy.vel)
+	mapList[player.rect.top/TILE_SIZE][player.rect.left/TILE_SIZE] = "p"
+	for end in game.endpoint_sprites:
+		mapList[end.rect.top/TILE_SIZE][end.rect.left/TILE_SIZE] = "e"
+	for spike in game.spike_sprites:
+		mapList[(spike.rect.top + 10)/TILE_SIZE][spike.rect.left/TILE_SIZE] = "i"
+	for ghost in game.ghost_sprites:
+		mapList[ghost.rect.top/TILE_SIZE][ghost.rect.left/TILE_SIZE] = "n"
+
+	#Converting mapList to a string
+	for row in mapList:
+		returnString = "".join(row) + "\n"
+
+	#Returning the map in string form
+	return returnString
