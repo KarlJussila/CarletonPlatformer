@@ -24,12 +24,27 @@ class Game:
 		#Initializing variables
 		self.font_name = pg.font.match_font(FONT_NAME)
 		self.music = pg.mixer.music.load(FILEPATH +"solarspire-jungle.wav")
+		pg.mixer.music.set_volume(0.2)
 		self.events = processInput
 		self.menuEvents = menuInput
+		self.editorEvents = editorInput
 		self.level = "level2.txt"
 		self.rightWall = False
 		self.leftWall = False
+		self.editTile = "s"
+		
+		#Main menu images
+		self.minecartTrackImage = pg.image.load(FILEPATH + "minecartTrack.png")
+		self.minecartTrackRect = self.minecartTrackImage.get_rect()
+		self.minecartTrackRect.topleft = (0,40)
 
+		self.minecartImageLeft = pg.image.load(FILEPATH + "minercart.png")
+		self.minecartImageRight = pg.transform.flip(self.minecartImageLeft, True, False)
+		self.minecartRect = self.minecartImageLeft.get_rect()
+		self.minecartRect.bottomleft = (0,40)
+
+		self.minecartDirection = 1
+		
 		#Background music
 		pg.mixer.music.play(-1, 0.0)
 
@@ -41,13 +56,13 @@ class Game:
 
 		for c in self.bkimgs:
 			dark = pg.Surface((c.get_width(), c.get_height()), flags=pg.SRCALPHA)
-			dark.fill((100, 75, 75, 100))
+			dark.fill((100, 75, 75, 100)) 
 			c.blit(dark, (0, 0), special_flags=pg.BLEND_RGBA_SUB)			
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
 				b = random.randint(0, 70)
 				self.bkg[row][col] = self.bkimgs[b]
-		               
+		
 				
 	#Level loading function
 	def load_data(self, file="level2.txt"):
@@ -84,7 +99,7 @@ class Game:
 						self.player = Player(self, col * TILE_SIZE, row * TILE_SIZE)
 					#Spikes
 					elif tile == "i":
-						Spike(self, col * TILE_SIZE, row * TILE_SIZE, 20, 10)	
+						Spike(self, col * TILE_SIZE, row * TILE_SIZE)	
 					elif tile == "n":
 						Enemy2(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20)					
 					#Green cave creature			
@@ -99,15 +114,28 @@ class Game:
 
 	#Main menu function
 	def mainMenu(self):
-
+				
 		self.playing = False
 
 		#Tick loop
 		while not self.playing:
 			self.clock.tick(FPS)
-
 			#Background fill
-			self.screen.fill(BACKGROUND_COLOR)
+			for row in range(int(HEIGHT/20)):
+				for col in range(int(WIDTH/20)):
+					self.screen.blit(self.bkg[row][col],(col*20,row*20))			
+		
+			self.screen.blit(self.minecartTrackImage, self.minecartTrackRect)
+
+			self.minecartRect.x += 5 * self.minecartDirection
+			if self.minecartRect.x > WIDTH * 1.125:
+				self.minecartDirection = -1
+			elif self.minecartRect.right < -(WIDTH/8):
+				self.minecartDirection = 1
+			if self.minecartDirection == 1:
+				self.screen.blit(self.minecartImageRight, self.minecartRect)
+			else:
+				self.screen.blit(self.minecartImageLeft, self.minecartRect)
 
 			#Event handling
 			clicked = self.menuEvents(self)
@@ -121,7 +149,7 @@ class Game:
 			pg.display.flip()
 
 	#Creating a new instance of the game, either a level or the menu
-	def new(self, level=None):
+	def new(self, level=None, editor=False):
 
 		#Initializing variables
 		self.ticks = 0
@@ -140,6 +168,7 @@ class Game:
 		self.button_sprites = pg.sprite.Group()
 		self.main_menu = pg.sprite.Group()
 		self.game_over_menu = pg.sprite.Group()
+		self.editor_menu = pg.sprite.Group()
 		self.ghost_sprites = pg.sprite.Group()
 
 		#TEMPORARY BUTTON IMAGES
@@ -151,13 +180,17 @@ class Game:
 		########################
 
 		#Main menu
-		self.level1Button = Button(self, 100, 100, pg.image.load(FILEPATH + "level1Button.png"), buttonHoverImage, lambda: self.new("level1.txt"), self.main_menu)
-		self.level2Button = Button(self, 100, 200, pg.image.load(FILEPATH + "level2Button.png"), buttonHoverImage, lambda: self.new("level2.txt"), self.main_menu)
-		self.level3Button = Button(self, 100, 300, pg.image.load(FILEPATH + "level3Button.png"), buttonHoverImage, lambda: self.new("level3.txt"), self.main_menu)
+		self.level1Button = Button(self, WIDTH/2 - 75, 100, pg.image.load(FILEPATH + "level1Button.png"), pg.image.load(FILEPATH + "level1ButtonHover.png"), lambda: self.new("level1.txt"), self.main_menu)
+		self.level2Button = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "level2Button.png"), pg.image.load(FILEPATH + "level2ButtonHover.png"), lambda: self.new("level2.txt"), self.main_menu)
+		self.level3Button = Button(self, WIDTH/2 - 75, 300, pg.image.load(FILEPATH + "level3Button.png"), pg.image.load(FILEPATH + "level3ButtonHover.png"), lambda: self.new("level3.txt"), self.main_menu)
+		self.editorButton = Button(self, WIDTH/2 - 75, 400, pg.image.load(FILEPATH + "editorButton.png"), pg.image.load(FILEPATH + "editorButtonHover.png"), self.requestLevel, self.main_menu)
 
 		#Game over menu
-		self.mainMenuButton = Button(self, 100, 100, pg.image.load(FILEPATH + "mainMenuButton.png"), buttonHoverImage, self.mainMenu, self.game_over_menu)
-		self.restartButton = Button(self, 100, 200, pg.image.load(FILEPATH + "respawnButton.png"), buttonHoverImage, lambda: self.new(self.level), self.game_over_menu)
+		self.mainMenuButton = Button(self, WIDTH/2 - 75, 100, pg.image.load(FILEPATH + "mainMenuButton.png"), pg.image.load(FILEPATH + "mainMenuButtonHover.png"), self.mainMenu, self.game_over_menu)
+		self.restartButton = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "respawnButton.png"), pg.image.load(FILEPATH + "respawnButtonHover.png"), lambda: self.new(self.level), self.game_over_menu)
+		
+		#Editor buttons
+		self.finishButton = Button(self, WIDTH/2 - 75, 20, pg.image.load(FILEPATH + "saveButton.png"), pg.image.load(FILEPATH + "saveButtonHover.png"), self.saveLevel, self.editor_menu)
 
 		#Going to main menu if no level has been selected
 		if level == None:
@@ -166,8 +199,21 @@ class Game:
 		#Loading level
 		self.load_data(level)
 
+		if editor:
+			self.levelEditor()
+
 		#Running game
 		self.run()
+
+	def requestLevel(self):
+		self.new(input("What level would you like to open?\n"), True)
+		
+	def saveLevel(self):
+		f = open(self.level, "w")
+		f.write(generateMap(self))
+		f.close()
+		
+		self.mainMenu()
 
 	def run(self):
 		self.playing = True
@@ -187,6 +233,8 @@ class Game:
 
 	#General update function
 	def update(self):
+				
+				
 		#Updating player
 		self.player.update()
 
@@ -213,9 +261,10 @@ class Game:
 	#Draw function
 	def draw(self):
 		#Background display
+		self.screen.fill((140,140,180))
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
-				self.screen.blit(self.bkg[row][col],(col*20,row*20))
+				self.screen.blit(self.bkg[row][col],(col*20,row*20))		
 				
 		#Displaying all sprites
 		for sprite in self.all_sprites:
@@ -227,14 +276,17 @@ class Game:
 
 	#Game over menu
 	def gameOverMenu(self):
+			
 		self.playing = False
 
 		#Tick loop
 		while not self.playing:
 			self.clock.tick(FPS)
-
+			for row in range(int(HEIGHT/20)):
+				for col in range(int(WIDTH/20)):
+					self.screen.blit(self.bkg[row][col],(col*20,row*20))			
 			#Background fill
-			self.screen.fill(BACKGROUND_COLOR)
+			
 
 			#Event handling
 			clicked = self.menuEvents(self)
@@ -246,6 +298,97 @@ class Game:
 
 			#Updating display
 			pg.display.flip()
+
+	def levelEditor(self):
+			
+		self.playing = False
+		shellObject = ShellObject(self, 0, self.map.height)
+
+		#Tick loop
+		while not self.playing:
+			
+			self.clock.tick(FPS)
+
+			#Event handling
+			click = self.editorEvents(self)			
+
+			#Buttons
+			for button in self.editor_menu:
+				button.update(click)		
+
+			#Adding new tiles
+			alreadyExists = False
+			mousePos = list(pg.mouse.get_pos())
+			mousePos[0] -= self.camera.camera.x
+			mousePos[1] -= self.camera.camera.y
+			mousePressed = pg.mouse.get_pressed()
+
+			if mousePressed[0] and mousePos[0] >= 0 and mousePos[0] <= self.map.width and mousePos[1] >= 0 and mousePos[1] <= self.map.height:
+
+				for obj in self.all_sprites:
+					if obj.type == None:
+						continue
+					else:
+						if obj.rect.collidepoint(mousePos):
+							if obj.type == self.editTile:
+								alreadyExists = True
+								print("Already exists")
+								break
+							else:
+								print("Killing object")
+								obj.kill()
+
+				if not alreadyExists:
+					print("Does not exist")
+					if self.editTile == "s":
+						Tile(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20)
+					if self.editTile == "e":
+						EndPoint(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20)
+					if self.editTile == "i":
+						Spike(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20)
+					if self.editTile == "n":
+						Enemy2(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20)
+					if self.editTile == "p":
+						self.player.kill()
+						self.player = Player(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20)
+					if self.editTile == "1":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 1)
+					if self.editTile == "2":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 2)
+					if self.editTile == "3":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 3)
+					if self.editTile == "4":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 4)
+					if self.editTile == "5":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 5)
+					if self.editTile == "6":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 6)
+					if self.editTile == "7":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 7)
+					if self.editTile == "8":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 8)
+					if self.editTile == "9":
+						Enemy1(self, (mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 9)
+					if self.editTile == "r":
+						Turret(self,(mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, 1, 5, 1)
+					#Left turret
+					if self.editTile == "l":
+						Turret(self,(mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 5, -1)
+						
+
+			#Moving shell
+			shellObject.update()
+
+			#Moving camera
+			self.camera.update(shellObject)
+
+			#Drawing sprites:
+			self.draw()
+			
+			#Buttons
+			for button in self.editor_menu:
+				button.draw()
+
 
 	#---------DEPRECATED---------#
 	def waitForKey(self):

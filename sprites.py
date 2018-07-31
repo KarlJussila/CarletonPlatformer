@@ -10,6 +10,8 @@ class Player(pg.sprite.Sprite):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.player_sprite
 
+		self.type = "p"
+
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -130,6 +132,8 @@ class Enemy1(pg.sprite.Sprite):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.enemy_sprites
 
+		self.type = "0"
+
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -175,6 +179,8 @@ class Enemy2(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h, direction = -1, vel = 5):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.ghost_sprites
+
+		self.type = "n"
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -234,9 +240,11 @@ class Enemy2(pg.sprite.Sprite):
 		self.kill()
 #--------------------PLEASE CHANGE TO BE LESS JANKY, EVAN--------------------#
 class Spike(pg.sprite.Sprite):
-	def __init__(self, game, x, y, w, h):
+	def __init__(self, game, x, y):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.spike_sprites
+
+		self.type = "i"
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -247,8 +255,6 @@ class Spike(pg.sprite.Sprite):
 		self.image = pg.image.load(FILEPATH + "spikes.png")
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y+10)
-		self.width = w
-		self.height = h
 #--------------------PLEASE CHANGE TO BE LESS JANKY, EVAN--------------------#
 
 #Turret class
@@ -256,6 +262,8 @@ class Turret(pg.sprite.Sprite):
 	def __init__(self, game, x, y, w, h, d, vel = 5, delay = int(FPS * 2.5)):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.turret_sprites
+
+		self.type = "t"
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -303,6 +311,8 @@ class Projectile(pg.sprite.Sprite):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.projectile_sprites
 
+		self.type = None
+
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -341,6 +351,8 @@ class Tile(pg.sprite.Sprite):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.tiles
 
+		self.type = "s"
+
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -356,6 +368,8 @@ class Platform(pg.sprite.Sprite):
 	def __init__(self, tiles, game):
 		#Adding to sprite groups
 		self.groups = game.platforms, game.all_sprites
+
+		self.type = None
 
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
@@ -390,6 +404,8 @@ class EndPoint(pg.sprite.Sprite):
 		#Adding to sprite groups
 		self.groups = game.all_sprites, game.endpoint_sprites
 
+		self.type = "e"
+
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -421,6 +437,8 @@ class Button(pg.sprite.Sprite):
 		self.rect = image.get_rect()
 		self.rect.topleft = (x,y)
 		self.function = function
+		
+		
 
 	#Updating image, getting clicked
 	def update(self, click):
@@ -443,4 +461,4 @@ class Button(pg.sprite.Sprite):
 	#Draw function
 	def draw(self):
 		#Blit image to screen
-		self.game.screen.blit(self.image, self.rect)
+		self.game.screen.blit(self.image, self.rect, special_flags=0)

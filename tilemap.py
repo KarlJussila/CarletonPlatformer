@@ -45,27 +45,53 @@ class Camera:
 		#Updating camera rectangle
 		self.camera = pg.Rect(x, y, self.width, self.height)
 
-def generateMap(self,game):
+class ShellObject:
+	def __init__(self, game, x, y):
+		self.x = x
+		self.y = y
+		self.rect = pg.Rect(x, y, 20, 20)
+
+	def update(self):
+		keys = pg.key.get_pressed()
+		if keys[pg.K_a]:
+			self.x -= 5
+		if keys[pg.K_d]:
+			self.x += 5
+		if keys[pg.K_w]:
+			self.y -= 5
+		if keys[pg.K_s]:
+			self.y += 5
+			
+		self.rect.left = self.x
+		self.rect.top = self.y
+
+
+
+def generateMap(game):
 	#Creating empty 2D list
-	mapList = [[None for i in range(game.map.tileWidth)] for j in range(game.map.tileHeight)]
+	mapList = [["." for i in range(game.map.tileWidth)] for j in range(game.map.tileHeight)]
 	returnString = ""
 
 	#Filling mapList
 	for tile in game.tiles:
-		mapList[tile.rect.top/TILE_SIZE][tile.rect.left/TILE_SIZE] = "s"
+		mapList[tile.rect.top//TILE_SIZE][tile.rect.left//TILE_SIZE] = "s"
 	for enemy in game.enemy_sprites:
-		mapList[enemy.rect.top/TILE_SIZE][enemy.rect.left/TILE_SIZE] = str(enemy.vel)
-	mapList[player.rect.top/TILE_SIZE][player.rect.left/TILE_SIZE] = "p"
+		mapList[enemy.rect.top//TILE_SIZE][enemy.rect.left//TILE_SIZE] = str(enemy.vel)
+	mapList[game.player.rect.top//TILE_SIZE][game.player.rect.left//TILE_SIZE] = "p"
 	for end in game.endpoint_sprites:
-		mapList[end.rect.top/TILE_SIZE][end.rect.left/TILE_SIZE] = "e"
+		mapList[end.rect.top//TILE_SIZE][end.rect.left//TILE_SIZE] = "e"
 	for spike in game.spike_sprites:
-		mapList[(spike.rect.top + 10)/TILE_SIZE][spike.rect.left/TILE_SIZE] = "i"
+		mapList[(spike.rect.top - 10)//TILE_SIZE][spike.rect.left//TILE_SIZE] = "i"
 	for ghost in game.ghost_sprites:
-		mapList[ghost.rect.top/TILE_SIZE][ghost.rect.left/TILE_SIZE] = "n"
-
+		mapList[ghost.rect.top//TILE_SIZE][ghost.rect.left//TILE_SIZE] = "n"
+	for turret in game.turret_sprites:
+		if turret.direction == 1:
+			mapList[turret.rect.top//TILE_SIZE][turret.rect.left//TILE_SIZE] = "r"
+		else:
+			mapList[turret.rect.top//TILE_SIZE][turret.rect.left//TILE_SIZE] = "l"
 	#Converting mapList to a string
 	for row in mapList:
-		returnString = "".join(row) + "\n"
+		returnString += "".join(row) + "\n"
 
 	#Returning the map in string form
 	return returnString
