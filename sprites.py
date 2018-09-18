@@ -11,13 +11,14 @@ class Player(pg.sprite.Sprite):
 		self.groups = game.all_sprites, game.player_sprite
 
 		self.type = "p"
-
+		self.effect = pg.mixer.Sound(FILEPATH + "221547__joseppujol__horror-scream-high-pitched-voice.wav")
 		#Sprite init function
 		pg.sprite.Sprite.__init__(self, self.groups)
 
 		#Initializing variables
 		self.game = game
-		
+		self.wallClimb = False
+		self.onWall = False
 		self.image = pg.image.load(FILEPATH + PLAYER_IMG1).convert_alpha()
 		self.dwarf1Left = self.image
 		self.dwarf1Right = pg.transform.flip(self.image, True, False)
@@ -63,6 +64,7 @@ class Player(pg.sprite.Sprite):
 		self.acc = vec(0, PLAYER_GRAV)
 
 		#Canceling acceleration due to gravity if onGround
+		
 		if self.onGround:
 			self.acc.y = 0
 			self.vel.y = 0
@@ -83,8 +85,11 @@ class Player(pg.sprite.Sprite):
 		self.vel += self.acc
 		if(self.vel.y > 0):
 			self.vel.y = min(30, self.vel.y)
-
+		
 		#Updating position
+		if self.onWall:
+			self.vel.y = 0
+			self.acc.y = 0
 		self.pos += self.vel + 0.5 * self.acc
 
 		if self.pos.x < 0:
@@ -105,15 +110,18 @@ class Player(pg.sprite.Sprite):
 	#Player jump function
 	def jump(self):
 		#Run only if the player is on the ground
-		if self.onGround:
+		if self.onGround or self.onWall:
 			#Set upward velocity and such
+			self.onWall = False
 			self.vel.y = -18
 			self.pos.y -= 1
 			self.rect.top -= 2
 			self.onGround = False
+			
 
 	#Kill the player
 	def die(self, cause="You have died from unknown causes."):
+		self.effect.play();
 		#Kill the sprite
 		self.kill()
 
