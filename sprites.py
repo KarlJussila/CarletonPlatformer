@@ -18,8 +18,6 @@ class Player(pg.sprite.Sprite):
 		#Initializing variables
 		self.game = game
 		self.wallClimb = False
-		self.doubleJump = True
-		self.jLeft = 1
 		self.onWall = False
 		self.image = pg.image.load(FILEPATH + PLAYER_IMG1).convert_alpha()
 		self.dwarf1Left = self.image
@@ -57,7 +55,6 @@ class Player(pg.sprite.Sprite):
 		self.onGround = False
 		for platform in self.game.platforms:
 			if self.pos.y <= platform.rect.top and (platform.rect.collidepoint((self.rect.bottomright[0], self.rect.bottomright[1] + 1)) or platform.rect.collidepoint((self.rect.bottomleft[0], self.rect.bottomleft[1] + 1))):
-				self.jLeft = 1
 				self.onGround = True
 
 		#Saving last position
@@ -115,18 +112,13 @@ class Player(pg.sprite.Sprite):
 		#Run only if the player is on the ground
 		if self.onGround or self.onWall:
 			#Set upward velocity and such
-			
 			self.onWall = False
 			self.vel.y = -18
 			self.pos.y -= 1
 			self.rect.top -= 2
 			self.onGround = False
 			
-		elif (not self.onGround and not self.onWall and self.doubleJump and self.jLeft>0):
-			self.vel.y = -18
-			self.pos.y -= 1
-			self.rect.top -= 2			
-			self.jLeft-=1
+
 	#Kill the player
 	def die(self, cause="You have died from unknown causes."):
 		self.effect.play();
