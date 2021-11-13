@@ -104,10 +104,6 @@ def collisions(game):
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.left - (game.player.rect.width/2) - 2
 						game.player.rect.midbottom = game.player.pos
-						if game.player.wallClimb:
-							game.player.vel.y = 0
-							game.player.onWall = True						
-						break						
 						break
 					else:
 						#Collision is from the right
@@ -126,11 +122,6 @@ def collisions(game):
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
 						game.player.rect.midbottom = game.player.pos
-						print(game.player.wallClimb)
-						if game.player.wallClimb:
-							game.player.vel.y = 0
-							game.player.onWall = True
-							
 						break
 			elif game.player.vel.y > 0:
 
@@ -177,10 +168,6 @@ def collisions(game):
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.left - (game.player.rect.width/2) - 2
 						game.player.rect.midbottom = game.player.pos
-						if game.player.wallClimb:
-							game.player.vel.y = 0
-							game.player.onWall = True						
-						break						
 						break
 					elif game.player.vel.x < 0:
 						#Collision is from the right
@@ -200,12 +187,8 @@ def collisions(game):
 						game.player.vel.x = 0
 						game.player.pos.x = hit.rect.right + (game.player.rect.width/2) + 2
 						game.player.rect.midbottom = game.player.pos
-						if game.player.wallClimb:
-							game.player.vel.y = 0
-							game.player.onWall = True						
 						break
 			else:
-				
 				if game.player.vel.x > 0 and not game.rightWall:
 					#Collision is from the left
 					game.rightWall = True

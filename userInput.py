@@ -18,13 +18,7 @@ def processInput(game):
 		elif event.type == pg.KEYDOWN:
 			if event.key == pg.K_SPACE:
 				game.player.jump()
-			if event.key == pg.K_a:
-				game.player.onWall = False
-				
-				
-		else:
-			game.player.onWall = False
-			game.player.pos.x +=1
+
 #Menu input processing
 def menuInput(game):
 	#Loop through events
@@ -86,8 +80,5 @@ def editorInput(game):
 				game.editTile = "8"
 			elif event.key == pg.K_9:
 				game.editTile = "9"
-			elif event.key == pg.K_BACKQUOTE:
-				print("Saved")
-				game.saveLevel()
 		elif event.type == pg.MOUSEBUTTONDOWN:
 			return True

@@ -121,12 +121,10 @@ class Game:
 		while not self.playing:
 			self.clock.tick(FPS)
 			#Background fill
-			self.screen.fill((140,140,180))
 			for row in range(int(HEIGHT/20)):
 				for col in range(int(WIDTH/20)):
-					self.screen.blit(self.bkg[row][col],(col*20,row*20))
-			
-			self.screen.blit(pg.image.load(FILEPATH + "Shoops_adventures.png"), (WIDTH/2 - 260, 43))
+					self.screen.blit(self.bkg[row][col],(col*20,row*20))			
+		
 			self.screen.blit(self.minecartTrackImage, self.minecartTrackRect)
 
 			self.minecartRect.x += 5 * self.minecartDirection
@@ -172,7 +170,6 @@ class Game:
 		self.game_over_menu = pg.sprite.Group()
 		self.editor_menu = pg.sprite.Group()
 		self.ghost_sprites = pg.sprite.Group()
-		self.level_select = pg.sprite.Group()
 
 		#TEMPORARY BUTTON IMAGES
 		buttonImage = pg.Surface((100, 35))
@@ -191,9 +188,9 @@ class Game:
 		#Game over menu
 		self.mainMenuButton = Button(self, WIDTH/2 - 75, 100, pg.image.load(FILEPATH + "mainMenuButton.png"), pg.image.load(FILEPATH + "mainMenuButtonHover.png"), self.mainMenu, self.game_over_menu)
 		self.restartButton = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "respawnButton.png"), pg.image.load(FILEPATH + "respawnButtonHover.png"), lambda: self.new(self.level), self.game_over_menu)
-		self.levelSelectButton  = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "respawnButton.png"), pg.image.load(FILEPATH + "respawnButtonHover.png"), lambda: self.new(self.level), self.game_over_menu)
+		
 		#Editor buttons
-		#self.finishButton = Button(self, WIDTH/2 - 75, 20, pg.image.load(FILEPATH + "saveButton.png"), pg.image.load(FILEPATH + "saveButtonHover.png"), self.saveLevel, self.editor_menu)
+		self.finishButton = Button(self, WIDTH/2 - 75, 20, pg.image.load(FILEPATH + "saveButton.png"), pg.image.load(FILEPATH + "saveButtonHover.png"), self.saveLevel, self.editor_menu)
 
 		#Going to main menu if no level has been selected
 		if level == None:
@@ -209,11 +206,7 @@ class Game:
 		self.run()
 
 	def requestLevel(self):
-		text =input("What level would you like to open?\n")
-		if(text.find(".txt") == -1):
-		        text = text +".txt"
-		
-		self.new(text, True)
+		self.new(input("What level would you like to open?\n"), True)
 		
 	def saveLevel(self):
 		f = open(self.level, "w")
@@ -246,7 +239,6 @@ class Game:
 		self.player.update()
 
 		#Updating enemies
-
 		for enemy in self.enemy_sprites:
 			enemy.update()
 		for ghost in self.ghost_sprites:
@@ -281,10 +273,7 @@ class Game:
 
 		#Update the display
 		pg.display.flip()
-	#def levelSelect(self):
-		#for(sprite in self.main_menu):
-		#	sprite.remove();
-		#pass
+
 	#Game over menu
 	def gameOverMenu(self):
 			
@@ -324,7 +313,8 @@ class Game:
 			click = self.editorEvents(self)			
 
 			#Buttons
-				
+			for button in self.editor_menu:
+				button.update(click)		
 
 			#Adding new tiles
 			alreadyExists = False
@@ -396,7 +386,8 @@ class Game:
 			self.draw()
 			
 			#Buttons
-			
+			for button in self.editor_menu:
+				button.draw()
 
 
 	#---------DEPRECATED---------#
