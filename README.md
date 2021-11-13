@@ -3,6 +3,10 @@ This is a simple 2D platformer that I made with a friend at the Carleton SCSI pr
 
 Pygame is a very minimal game engine, so we had to implement collisions and movement and other simple mechanics from scratch.
 
+![main menu](https://github.com/KarlJussila/CarletonPlatformer/blob/master/assets/main_menu.png)
+
+![level 2](https://github.com/KarlJussila/CarletonPlatformer/blob/master/assets/level_2.png)
+
 ### Installation
 - Install Python 3
 - Install pygame with pip
