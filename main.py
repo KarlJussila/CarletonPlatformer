@@ -23,7 +23,7 @@ class Game:
 
 		#Initializing variables
 		self.font_name = pg.font.match_font(FONT_NAME)
-		self.music = pg.mixer.music.load(FILEPATH +"solarspire-jungle.wav")
+		self.music = pg.mixer.music.load(path.join(FILEPATH, "solarspire-jungle.wav"))
 		pg.mixer.music.set_volume(0.2)
 		self.events = processInput
 		self.menuEvents = menuInput
@@ -32,41 +32,53 @@ class Game:
 		self.rightWall = False
 		self.leftWall = False
 		self.editTile = "s"
-		
+
 		#Main menu images
-		self.minecartTrackImage = pg.image.load(FILEPATH + "minecartTrack.png")
+		self.minecartTrackImage = pg.image.load(path.join(FILEPATH, "minecartTrack.png"))
 		self.minecartTrackRect = self.minecartTrackImage.get_rect()
 		self.minecartTrackRect.topleft = (0,40)
 
-		self.minecartImageLeft = pg.image.load(FILEPATH + "minercart.png")
+		self.minecartImageLeft = pg.image.load(path.join(FILEPATH, "minercart.png"))
 		self.minecartImageRight = pg.transform.flip(self.minecartImageLeft, True, False)
 		self.minecartRect = self.minecartImageLeft.get_rect()
 		self.minecartRect.bottomleft = (0,40)
 
 		self.minecartDirection = 1
-		
+
 		#Background music
 		pg.mixer.music.play(-1, 0.0)
 
-		#Distribution of backgroun images
-		self.bkimgs = [pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "stone.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "emeraldOre.png"), pg.image.load(FILEPATH + "ironOre.png") , pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "ironOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png"), pg.image.load(FILEPATH + "coalOre.png")]
-		
+		#Import backgroun images
+		stone_img = pg.image.load(path.join(FILEPATH, "stone.png"))
+		coal_img = pg.image.load(path.join(FILEPATH, "coalOre.png"))
+		emerald_img = pg.image.load(path.join(FILEPATH, "emeraldOre.png"))
+		iron_img = pg.image.load(path.join(FILEPATH, "ironOre.png"))
+
+		self.bkimgs = [stone_img, coal_img, emerald_img, iron_img]
+
 		#Selecting random background
 		self.bkg = [[None for i in range(40)]for j in range(30)]
 
 		for c in self.bkimgs:
 			dark = pg.Surface((c.get_width(), c.get_height()), flags=pg.SRCALPHA)
-			dark.fill((100, 75, 75, 100)) 
-			c.blit(dark, (0, 0), special_flags=pg.BLEND_RGBA_SUB)			
+			dark.fill((100, 75, 75, 100))
+			c.blit(dark, (0, 0), special_flags=pg.BLEND_RGBA_SUB)
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
-				b = random.randint(0, 70)
-				self.bkg[row][col] = self.bkimgs[b]
-		
-				
+				b = random.randint(1, 100)
+				if (b < 90):
+					self.bkg[row][col] = stone_img
+				elif (b < 95):
+					self.bkg[row][col] = iron_img
+				elif (b < 100):
+					self.bkg[row][col] = coal_img
+				else:
+					self.bkg[row][col] = emerald_img
+
+
 	#Level loading function
 	def load_data(self, file="level2.txt"):
-		
+
 		#Accessing file
 		game_folder = path.dirname(__file__)
 		assets_folder = path.join(game_folder, 'assets')
@@ -90,8 +102,8 @@ class Game:
 						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, 1, 5, 1)
 					#Left turret
 					elif tile == "l":
-						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, 5, -1)	
-					#Endpoint (gold)					
+						Turret(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, 5, -1)
+					#Endpoint (gold)
 					elif tile == "e":
 						self.endPoint = EndPoint(self, col * TILE_SIZE, row * TILE_SIZE)
 					#Player
@@ -99,10 +111,10 @@ class Game:
 						self.player = Player(self, col * TILE_SIZE, row * TILE_SIZE)
 					#Spikes
 					elif tile == "i":
-						Spike(self, col * TILE_SIZE, row * TILE_SIZE)	
+						Spike(self, col * TILE_SIZE, row * TILE_SIZE)
 					elif tile == "n":
-						Enemy2(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20)					
-					#Green cave creature			
+						Enemy2(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20)
+					#Green cave creature
 					else:
 						Enemy1(self, col * TILE_SIZE, row * TILE_SIZE, 20, 20, -1, int(tile))
 				else:
@@ -114,7 +126,7 @@ class Game:
 
 	#Main menu function
 	def mainMenu(self):
-				
+
 		self.playing = False
 
 		#Tick loop
@@ -123,8 +135,8 @@ class Game:
 			#Background fill
 			for row in range(int(HEIGHT/20)):
 				for col in range(int(WIDTH/20)):
-					self.screen.blit(self.bkg[row][col],(col*20,row*20))			
-		
+					self.screen.blit(self.bkg[row][col],(col*20,row*20))
+
 			self.screen.blit(self.minecartTrackImage, self.minecartTrackRect)
 
 			self.minecartRect.x += 5 * self.minecartDirection
@@ -180,17 +192,17 @@ class Game:
 		########################
 
 		#Main menu
-		self.level1Button = Button(self, WIDTH/2 - 75, 100, pg.image.load(FILEPATH + "level1Button.png"), pg.image.load(FILEPATH + "level1ButtonHover.png"), lambda: self.new("level1.txt"), self.main_menu)
-		self.level2Button = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "level2Button.png"), pg.image.load(FILEPATH + "level2ButtonHover.png"), lambda: self.new("level2.txt"), self.main_menu)
-		self.level3Button = Button(self, WIDTH/2 - 75, 300, pg.image.load(FILEPATH + "level3Button.png"), pg.image.load(FILEPATH + "level3ButtonHover.png"), lambda: self.new("level3.txt"), self.main_menu)
-		self.editorButton = Button(self, WIDTH/2 - 75, 400, pg.image.load(FILEPATH + "editorButton.png"), pg.image.load(FILEPATH + "editorButtonHover.png"), self.requestLevel, self.main_menu)
+		self.level1Button = Button(self, WIDTH/2 - 75, 100, pg.image.load(path.join(FILEPATH, "level1Button.png")), pg.image.load(path.join(FILEPATH, "level1ButtonHover.png")), lambda: self.new("level1.txt"), self.main_menu)
+		self.level2Button = Button(self, WIDTH/2 - 75, 200, pg.image.load(path.join(FILEPATH, "level2Button.png")), pg.image.load(path.join(FILEPATH, "level2ButtonHover.png")), lambda: self.new("level2.txt"), self.main_menu)
+		self.level3Button = Button(self, WIDTH/2 - 75, 300, pg.image.load(path.join(FILEPATH, "level3Button.png")), pg.image.load(path.join(FILEPATH, "level3ButtonHover.png")), lambda: self.new("level3.txt"), self.main_menu)
+		self.editorButton = Button(self, WIDTH/2 - 75, 400, pg.image.load(path.join(FILEPATH, "editorButton.png")), pg.image.load(path.join(FILEPATH, "editorButtonHover.png")), self.requestLevel, self.main_menu)
 
 		#Game over menu
-		self.mainMenuButton = Button(self, WIDTH/2 - 75, 100, pg.image.load(FILEPATH + "mainMenuButton.png"), pg.image.load(FILEPATH + "mainMenuButtonHover.png"), self.mainMenu, self.game_over_menu)
-		self.restartButton = Button(self, WIDTH/2 - 75, 200, pg.image.load(FILEPATH + "respawnButton.png"), pg.image.load(FILEPATH + "respawnButtonHover.png"), lambda: self.new(self.level), self.game_over_menu)
-		
+		self.mainMenuButton = Button(self, WIDTH/2 - 75, 100, pg.image.load(path.join(FILEPATH, "mainMenuButton.png")), pg.image.load(path.join(FILEPATH, "mainMenuButtonHover.png")), self.mainMenu, self.game_over_menu)
+		self.restartButton = Button(self, WIDTH/2 - 75, 200, pg.image.load(path.join(FILEPATH, "respawnButton.png")), pg.image.load(path.join(FILEPATH, "respawnButtonHover.png")), lambda: self.new(self.level), self.game_over_menu)
+
 		#Editor buttons
-		self.finishButton = Button(self, WIDTH/2 - 75, 20, pg.image.load(FILEPATH + "saveButton.png"), pg.image.load(FILEPATH + "saveButtonHover.png"), self.saveLevel, self.editor_menu)
+		self.finishButton = Button(self, WIDTH/2 - 75, 20, pg.image.load(path.join(FILEPATH, "saveButton.png")), pg.image.load(path.join(FILEPATH, "saveButtonHover.png")), self.saveLevel, self.editor_menu)
 
 		#Going to main menu if no level has been selected
 		if level == None:
@@ -207,17 +219,17 @@ class Game:
 
 	def requestLevel(self):
 		self.new(input("What level would you like to open?\n"), True)
-		
+
 	def saveLevel(self):
 		f = open(self.level, "w")
 		f.write(generateMap(self))
 		f.close()
-		
+
 		self.mainMenu()
 
 	def run(self):
 		self.playing = True
-		
+
 		#Tick loop
 		while self.playing:
 			self.clock.tick(FPS)
@@ -233,8 +245,8 @@ class Game:
 
 	#General update function
 	def update(self):
-				
-				
+
+
 		#Updating player
 		self.player.update()
 
@@ -242,9 +254,9 @@ class Game:
 		for enemy in self.enemy_sprites:
 			enemy.update()
 		for ghost in self.ghost_sprites:
-			ghost.update()		
+			ghost.update()
 		for turret in self.turret_sprites:
-			turret.update()		
+			turret.update()
 		for proj in self.projectile_sprites:
 			proj.update()
 
@@ -254,7 +266,7 @@ class Game:
 		#Collision detection
 		collisions(self)
 		self.player.rect.midbottom = self.player.pos
-		
+
 		#Incrementing ticks
 		self.ticks += 1
 
@@ -264,11 +276,11 @@ class Game:
 		self.screen.fill((140,140,180))
 		for row in range(int(HEIGHT/20)):
 			for col in range(int(WIDTH/20)):
-				self.screen.blit(self.bkg[row][col],(col*20,row*20))		
-				
+				self.screen.blit(self.bkg[row][col],(col*20,row*20))
+
 		#Displaying all sprites
 		for sprite in self.all_sprites:
-			cameraRect = self.camera.apply(sprite)    
+			cameraRect = self.camera.apply(sprite)
 			self.screen.blit(sprite.image, cameraRect)
 
 		#Update the display
@@ -276,7 +288,7 @@ class Game:
 
 	#Game over menu
 	def gameOverMenu(self):
-			
+
 		self.playing = False
 
 		#Tick loop
@@ -284,9 +296,9 @@ class Game:
 			self.clock.tick(FPS)
 			for row in range(int(HEIGHT/20)):
 				for col in range(int(WIDTH/20)):
-					self.screen.blit(self.bkg[row][col],(col*20,row*20))			
+					self.screen.blit(self.bkg[row][col],(col*20,row*20))
 			#Background fill
-			
+
 
 			#Event handling
 			clicked = self.menuEvents(self)
@@ -300,21 +312,21 @@ class Game:
 			pg.display.flip()
 
 	def levelEditor(self):
-			
+
 		self.playing = False
 		shellObject = ShellObject(self, 0, self.map.height)
 
 		#Tick loop
 		while not self.playing:
-			
+
 			self.clock.tick(FPS)
 
 			#Event handling
-			click = self.editorEvents(self)			
+			click = self.editorEvents(self)
 
 			#Buttons
 			for button in self.editor_menu:
-				button.update(click)		
+				button.update(click)
 
 			#Adding new tiles
 			alreadyExists = False
@@ -374,7 +386,7 @@ class Game:
 					#Left turret
 					if self.editTile == "l":
 						Turret(self,(mousePos[0]//20) * 20, (mousePos[1]//20) * 20, 20, 20, -1, 5, -1)
-						
+
 
 			#Moving shell
 			shellObject.update()
@@ -384,7 +396,7 @@ class Game:
 
 			#Drawing sprites:
 			self.draw()
-			
+
 			#Buttons
 			for button in self.editor_menu:
 				button.draw()
@@ -417,6 +429,6 @@ g = Game()
 #Main loop
 while g.running:
 	g.new()
-	
+
 #Quitting pygame
 pg.quit()

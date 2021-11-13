@@ -17,17 +17,17 @@ class Player(pg.sprite.Sprite):
 
 		#Initializing variables
 		self.game = game
-		
-		self.image = pg.image.load(FILEPATH + PLAYER_IMG1).convert_alpha()
+
+		self.image = pg.image.load(path.join(FILEPATH, PLAYER_IMG1)).convert_alpha()
 		self.dwarf1Left = self.image
 		self.dwarf1Right = pg.transform.flip(self.image, True, False)
-		self.dwarf2Left = pg.image.load(FILEPATH + PLAYER_IMG2).convert_alpha()
+		self.dwarf2Left = pg.image.load(path.join(FILEPATH, PLAYER_IMG2)).convert_alpha()
 		self.dwarf2Right = pg.transform.flip(self.dwarf2Left,True,False)
-		self.dwarf3Left = pg.image.load(FILEPATH + PLAYER_IMG3).convert_alpha()
+		self.dwarf3Left = pg.image.load(path.join(FILEPATH, PLAYER_IMG3)).convert_alpha()
 		self.dwarf3Right = pg.transform.flip(self.dwarf3Left,True,False)
-		self.dwarf4Left = pg.image.load(FILEPATH + PLAYER_IMG4).convert_alpha()
+		self.dwarf4Left = pg.image.load(path.join(FILEPATH, PLAYER_IMG4)).convert_alpha()
 		self.dwarf4Right = pg.transform.flip(self.dwarf4Left,True,False)
-		
+
 		self.facing = 1
 		self.imageDict = {"11":self.dwarf1Right,"12":self.dwarf2Right,"13":self.dwarf3Right, "14":self.dwarf4Right, "-11":self.dwarf1Left,"-12":self.dwarf2Left,"-13":self.dwarf3Left, "-14":self.dwarf4Left}
 		self.imgNum = 1
@@ -77,7 +77,7 @@ class Player(pg.sprite.Sprite):
 			self.game.leftWall = False
 			self.acc.x = PLAYER_ACC
 			self.facing = 1
-		
+
 		#Calculating velocity
 		self.acc.x += self.vel.x * PLAYER_FRICTION
 		self.vel += self.acc
@@ -92,7 +92,7 @@ class Player(pg.sprite.Sprite):
 
 		#Updating player rectangle to match pos
 		self.rect.midbottom = self.pos
-		
+
 		#Animating player sprite
 		if abs(self.vel.x) > 1 and self.onGround:
 			self.animate()
@@ -101,7 +101,7 @@ class Player(pg.sprite.Sprite):
 				self.image = self.imageDict[str(self.facing) + "2"]
 			else:
 				self.image = self.imageDict[str(self.facing) + "1"]
-		
+
 	#Player jump function
 	def jump(self):
 		#Run only if the player is on the ground
@@ -140,8 +140,8 @@ class Enemy1(pg.sprite.Sprite):
 		#Initializing variables
 		self.game = game
 		self.image = pg.Surface((w, h))
-		self.img = pg.image.load(FILEPATH + "enemy.png")
-		self.img2 = pg.image.load(FILEPATH + "enemy2.png")
+		self.img = pg.image.load(path.join(FILEPATH, "enemy.png"))
+		self.img2 = pg.image.load(path.join(FILEPATH, "enemy2.png"))
 		self.image = self.img
 		self.animate = 1
 		self.rect = self.image.get_rect()
@@ -190,16 +190,16 @@ class Enemy2(pg.sprite.Sprite):
 		self.direction = 0
 		self.directiony = 0
 		self.image = pg.Surface((w, h))
-		self.img = pg.image.load(FILEPATH + "ghost.png")
-		self.img2 = pg.image.load(FILEPATH + "ghost2.png")
+		self.img = pg.image.load(path.join(FILEPATH, "ghost.png"))
+		self.img2 = pg.image.load(path.join(FILEPATH, "ghost2.png"))
 		self.image = self.img
 		self.animate = 1
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y)
 		self.width = w
 		self.height = h
-			
-		
+
+
 		self.vel = vel
 
 	#Updating pos, direction, etc.
@@ -217,22 +217,22 @@ class Enemy2(pg.sprite.Sprite):
 		if(self.game.player.pos.y > self.rect.y):
 		        self.directiony = 1
 		elif(self.game.player.pos.y < self.rect.y):
-		        self.directiony = -1	
+		        self.directiony = -1
 		else:
 			self.directiony = 0
 		if(self.game.player.pos.x > self.rect.x):
 		        self.direction = 1
 		elif(self.game.player.pos.x < self.rect.x):
-		        self.direction = -1	
+		        self.direction = -1
 		else:
 			self.direction = 0
 
 		#Changing direction if necessary
-						
-					
-			
+
+
+
 		self.rect.x += self.vel * self.direction
-		self.rect.y += self.vel * self.directiony	
+		self.rect.y += self.vel * self.directiony
 
 	#Kill the enemy
 	def die(self):
@@ -252,7 +252,7 @@ class Spike(pg.sprite.Sprite):
 		#Initializing variables
 		self.game = game
 		self.image = pg.Surface((20, 10))
-		self.image = pg.image.load(FILEPATH + "spikes.png")
+		self.image = pg.image.load(path.join(FILEPATH, "spikes.png"))
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y+10)
 #--------------------PLEASE CHANGE TO BE LESS JANKY, EVAN--------------------#
@@ -271,7 +271,7 @@ class Turret(pg.sprite.Sprite):
 		#Initializing variables
 		self.direction = d
 		self.game = game
-		self.img = pg.image.load(FILEPATH + "turret.png")
+		self.img = pg.image.load(path.join(FILEPATH, "turret.png"))
 		self.img2 = pg.transform.flip(self.img, True, False)
 		self.image = pg.Surface((w, h))
 		print(d)
@@ -279,12 +279,12 @@ class Turret(pg.sprite.Sprite):
 		        self.image = self.img
 		else:
 			self.image = self.img2
-		
+
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (x, y)
 		self.width = w
 		self.height = h
-		
+
 		self.vel = vel
 		self.delay = delay
 		self.delay = int(FPS*2.5)
@@ -318,7 +318,7 @@ class Projectile(pg.sprite.Sprite):
 
 		#Initializing variables
 		self.game = game
-		self.img = pg.image.load(FILEPATH + "projectile.png")
+		self.img = pg.image.load(path.join(FILEPATH, "projectile.png"))
 		self.img2 = pg.transform.flip(self.img, True, False)
 		self.parent = parent
 		self.image = pg.Surface((10, 5))
@@ -377,7 +377,7 @@ class Platform(pg.sprite.Sprite):
 		#Initializing variables
 		self.game = game
 		self.tiles = tiles
-		
+
 		leftPos = game.map.width
 		rightPos = 0
 		topPos = game.map.height
@@ -412,12 +412,12 @@ class EndPoint(pg.sprite.Sprite):
 		#Initializing variables
 		self.game = game
 		self.image = pg.Surface((TILE_SIZE, TILE_SIZE))
-		img = pg.image.load(FILEPATH + "goldOre.png")
+		img = pg.image.load(path.join(FILEPATH, "goldOre.png"))
 		self.image = img
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
-		
+
 #Button class
 class Button(pg.sprite.Sprite):
 	def __init__(self, game, x, y, image, hoverImage, function, group):
@@ -437,8 +437,8 @@ class Button(pg.sprite.Sprite):
 		self.rect = image.get_rect()
 		self.rect.topleft = (x,y)
 		self.function = function
-		
-		
+
+
 
 	#Updating image, getting clicked
 	def update(self, click):
